@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Receta</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/recipes.css">
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="logo">
+            <h1>SIW FOOD</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Homepage</a></li>
+                <li><a href="/recipes">Recipes</a></li>
+                <li><a href="/chefs">Chefs</a></li>
+                <li><a href="/login">Login</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+    <h1>Editar Receta</h1>
+    <form th:action="@{'/recipes/update/' + ${recipe.id}}" th:object="${recipe}" method="post">
+        <input type="hidden" th:field="*{id}">
+        <label for="name">Nombre:</label>
+        <input type="text" id="name" name="name" th:field="*{name}" required>
+        <label for="description">Descripción:</label>
+        <textarea id="description" name="description" th:field="*{description}" required></textarea>
+        <label for="photos">Fotos (URL separadas por comas):</label>
+        <input type="text" id="photos" name="photos" th:field="*{photos}" >
+        <label for="ingredients">Ingredientes (IDs separados por comas):</label>
+        <input type="text" id="ingredients" name="ingredients" th:field="*{ingredients}" >
+        <label for="chef">ID del Chef:</label>
+        <input type="text" id="chef" name="chef" th:field="*{chef.id}" >
+        <button type="submit">Actualizar</button>
+    </form>
+
+</body>
+</html>

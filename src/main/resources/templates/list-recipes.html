@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipes - SIW FOOD</title>
+    <link rel="stylesheet" href="/static/css/recipes.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>SIW FOOD</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Homepage</a></li>
+                    <li><a href="/recipes">Recipes</a></li>
+                    <li><a href="/chefs">Chefs</a></li>
+                    <li><a href="/about">About us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <section class="recipes-section">
+            <h2>Recipes</h2>
+            <div class="filter">
+                <label for="filter">Filter by:</label>
+                <select id="filter" name="filter">
+                    <option value="all">All</option>
+                    <option value="time">Preparation Time</option>
+                    <option value="difficulty">Difficulty</option>
+                </select>
+            </div>
+            <div class="recipes-grid">
+                <!-- Cada receta será iterada aquí -->
+                <div class="recipe-card" th:each="recipe : ${recipes}">
+                    <img th:src="@{${recipe.photos}}" alt="Recipe Photo">
+                    <div class="recipe-info">
+                        <h3 th:text="${recipe.name}">Recipe Name</h3>
+                        <!--<p th:text="'Prep Time: ' + ${recipe.prepTime} + ' minutes'">Prep Time: XX minutes</p>-->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 SIW FOOD. All rights reserved.</p>
+    </footer>
+</body>
+</html>

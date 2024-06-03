@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Eliminar Receta</title>
+  <link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+<body>
+<h1>Eliminar Receta</h1>
+<p>¿Estás seguro de que deseas eliminar la receta con ID: <span th:text="${recipe.id}"></span>?</p>
+<form th:action="@{'/recipes/delete/' + ${recipe.id}}" method="post">
+  <input type="hidden" name="_method" value="delete">
+  <button type="submit">Eliminar</button>
+  <a href="/recipes">Cancelar</a>
+</form>
+</body>
+</html>
