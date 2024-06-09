@@ -6,21 +6,8 @@
     <link rel="stylesheet" type="text/css" href="/static/css/recipes.css">
 </head>
 <body>
-<header>
-    <div class="container">
-        <div class="logo">
-            <h1>SIW FOOD</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="/">Homepage</a></li>
-                <li><a href="/recipes">Recipes</a></li>
-                <li><a href="/chefs">Chefs</a></li>
-                <li><a href="/login">Login</a></li>
-            </ul>
-        </nav>
-    </div>
-</header>
+    <div th:replace="header :: header"></div>
+
     <h1>Editar Receta</h1>
     <form th:action="@{'/recipes/update/' + ${recipe.id}}" th:object="${recipe}" method="post">
         <input type="hidden" th:field="*{id}">

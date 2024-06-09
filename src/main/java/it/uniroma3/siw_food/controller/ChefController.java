@@ -25,11 +25,11 @@ public class ChefController {
     @Autowired
     private ChefRepository chefRepository;
 
-    @GetMapping
+    @GetMapping("/list")
     public String getAllChefs(Model model) {
         List<Chef> chefs = chefRepository.findAll();
         model.addAttribute("chefs", chefs);
-        return "chefs";
+        return "list-chefs";
     }
 
     @GetMapping("/new")
@@ -46,22 +46,17 @@ public class ChefController {
         }
 
         try {
-            // Guardar el archivo en el sistema de archivos
             byte[] bytes = photo.getBytes();
             Path path = Paths.get(UPLOADED_FOLDER + photo.getOriginalFilename());
             Files.write(path, bytes);
-
-            // Establecer la ruta del archivo en el objeto Chef
             chef.setPhoto("/images/" + photo.getOriginalFilename());
             chefRepository.save(chef);
-
             redirectAttributes.addFlashAttribute("message", "You successfully uploaded '" + photo.getOriginalFilename() + "'");
-
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return "redirect:/chefs";
+        return "redirect:/chefs/list";
     }
 
     @GetMapping("/edit/{id}")
@@ -80,6 +75,9 @@ public class ChefController {
         chef.setFirstName(chefDetails.getFirstName());
         chef.setLastName(chefDetails.getLastName());
         chef.setDateOfBirth(chefDetails.getDateOfBirth());
+        chef.setEmail(chefDetails.getEmail());
+        chef.setUsername(chefDetails.getUsername());
+        chef.setPassword(chefDetails.getPassword());
 
         if (!photo.isEmpty()) {
             try {
@@ -93,7 +91,7 @@ public class ChefController {
         }
 
         chefRepository.save(chef);
-        return "redirect:/chefs";
+        return "redirect:/chefs/list";
     }
 
     @GetMapping("/delete/{id}")
@@ -109,7 +107,7 @@ public class ChefController {
         Chef chef = chefRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Chef not exist with id :" + id));
         chefRepository.delete(chef);
-        return "redirect:/chefs";
+        return "redirect:/chefs/list";
     }
 
     @GetMapping("/{id}")

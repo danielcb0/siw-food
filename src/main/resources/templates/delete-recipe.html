@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>Eliminar Receta</title>
-  <link rel="stylesheet" type="text/css" href="/css/styles.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/style.css">
 </head>
 <body>
+  <div th:replace="header :: header"></div>
+
 <h1>Eliminar Receta</h1>
 <p>¿Estás seguro de que deseas eliminar la receta con ID: <span th:text="${recipe.id}"></span>?</p>
 <form th:action="@{'/recipes/delete/' + ${recipe.id}}" method="post">

@@ -7,31 +7,18 @@
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-<header>
-    <div class="container">
-        <div class="logo">
-            <h1>SIW FOOD</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="/">Homepage</a></li>
-                <li><a href="/recipes">Recipes</a></li>
-                <li><a href="/chefs">Chefs</a></li>
-                <li><a href="/login">Login</a></li>
-            </ul>
-        </nav>
-    </div>
-</header>
+    <div th:replace="header :: header"></div>
+
+
 <main>
     <section class="hero">
         <h2>Search your recipes with the way you want</h2>
         <div class="actions">
-            <a href="/recipes" class="btn">See all the Recipes</a>
-            <a href="/chefs" class="btn">See all the Chefs</a>
+            <a href="/recipes/list" class="btn">See all the Recipes</a>
+            <a href="/chefs/list" class="btn">See all the Chefs</a>
         </div>
     </section>
 </main>
-<img th:src="@{/static/images/gemma.jpg}" alt="Chef Photo">
 
 <footer>
     <p>&copy; 2024 SIW FOOD. All rights reserved.</p>

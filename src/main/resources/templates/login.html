@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - SIW FOOD</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="logo">
+            <h1>SIW FOOD</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Homepage</a></li>
+                <li><a href="/recipes">Recipes</a></li>
+                <li><a href="/chefs">Chefs</a></li>
+                <li><a href="/about">About us</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<main>
+    <section class="login-section">
+        <h2>Login</h2>
+        <form action="/login" method="post">
+            <div>
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <p>Don't have an account? <a href="/register">Register here</a></p>
+    </section>
+</main>
+<footer>
+    <p>&copy; 2024 SIW FOOD. All rights reserved.</p>
+</footer>
+</body>
+</html>

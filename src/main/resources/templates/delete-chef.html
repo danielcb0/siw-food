@@ -7,21 +7,8 @@
   <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-<header>
-  <div class="container">
-    <div class="logo">
-      <h1>SIW FOOD</h1>
-    </div>
-    <nav>
-      <ul>
-        <li><a href="/">Homepage</a></li>
-        <li><a href="/recipes">Recipes</a></li>
-        <li><a href="/chefs">Chefs</a></li>
-        <li><a href="/about">About us</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
+  <div th:replace="header :: header"></div>
+
 <main>
   <section class="form-section">
     <h2>Delete Chef</h2>

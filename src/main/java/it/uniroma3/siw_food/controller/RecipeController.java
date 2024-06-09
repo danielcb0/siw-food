@@ -1,48 +1,51 @@
 package it.uniroma3.siw_food.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import it.uniroma3.siw_food.exception.ResourceNotFoundException;
 import it.uniroma3.siw_food.model.Recipe;
 import it.uniroma3.siw_food.repository.RecipeRepository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:4200")
-@RestController
-@RequestMapping("/api/v1")
+@Controller
+@RequestMapping("/recipes")
 public class RecipeController {
 
     @Autowired
     private RecipeRepository recipeRepository;
 
-    // get all recipes
-    @GetMapping("/recipes")
-    public List<Recipe> getAllRecipes() {
-        return recipeRepository.findAll();
+    @GetMapping("/list")
+    public String getAllRecipes(Model model) {
+        List<Recipe> recipes = recipeRepository.findAll();
+        model.addAttribute("recipes", recipes);
+        return "list-recipes";
     }
 
-    // create recipe rest api
-    @PostMapping("/recipes")
-    public Recipe createRecipe(@RequestBody Recipe recipe) {
-        return recipeRepository.save(recipe);
+    @GetMapping("/new")
+    public String createRecipeForm(Model model) {
+        model.addAttribute("recipe", new Recipe());
+        return "create-recipe";
     }
 
-    // get recipe by id rest api
-    @GetMapping("/recipes/{id}")
-    public ResponseEntity<Recipe> getRecipeById(@PathVariable Long id) {
+    @PostMapping
+    public String createRecipe(@ModelAttribute("recipe") Recipe recipe) {
+        recipeRepository.save(recipe);
+        return "redirect:/recipes/list";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editRecipeForm(@PathVariable Long id, Model model) {
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe not exist with id :" + id));
-        return ResponseEntity.ok(recipe);
+        model.addAttribute("recipe", recipe);
+        return "edit-recipe";
     }
 
-    // update recipe rest api
-    @PutMapping("/recipes/{id}")
-    public ResponseEntity<Recipe> updateRecipe(@PathVariable Long id, @RequestBody Recipe recipeDetails) {
+    @PostMapping("/update/{id}")
+    public String updateRecipe(@PathVariable Long id, @ModelAttribute("recipe") Recipe recipeDetails) {
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe not exist with id :" + id));
 
@@ -52,19 +55,31 @@ public class RecipeController {
         recipe.setIngredients(recipeDetails.getIngredients());
         recipe.setChef(recipeDetails.getChef());
 
-        Recipe updatedRecipe = recipeRepository.save(recipe);
-        return ResponseEntity.ok(updatedRecipe);
+        recipeRepository.save(recipe);
+        return "redirect:/recipes/list";
     }
 
-    // delete recipe rest api
-    @DeleteMapping("/recipes/{id}")
-    public ResponseEntity<Map<String, Boolean>> deleteRecipe(@PathVariable Long id) {
+    @GetMapping("/delete/{id}")
+    public String deleteRecipeForm(@PathVariable Long id, Model model) {
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe not exist with id :" + id));
+        model.addAttribute("recipe", recipe);
+        return "delete-recipe";
+    }
 
+    @PostMapping("/delete/{id}")
+    public String deleteRecipe(@PathVariable Long id) {
+        Recipe recipe = recipeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Recipe not exist with id :" + id));
         recipeRepository.delete(recipe);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", Boolean.TRUE);
-        return ResponseEntity.ok(response);
+        return "redirect:/recipes/list";
+    }
+
+    @GetMapping("/{id}")
+    public String getRecipeDetails(@PathVariable Long id, Model model) {
+        Recipe recipe = recipeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Recipe not exist with id :" + id));
+        model.addAttribute("recipe", recipe);
+        return "recipe-details";
     }
 }

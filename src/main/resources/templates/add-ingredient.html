@@ -4,6 +4,9 @@
     <title>Add Ingredient</title>
 </head>
 <body>
+
+    <div th:replace="header :: header"></div>
+
 <h1>Add Ingredient</h1>
 <form th:action="@{/ingredients/add}" th:object="${ingredient}" method="post">
     <div>

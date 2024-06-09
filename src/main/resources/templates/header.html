@@ -1,0 +1,24 @@
+
+
+
+<header>
+    <div class="container">
+        <div class="logo">
+            <h1>SIW FOOD</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Homepage</a></li>
+                <li><a href="/recipes/list">Recipes</a></li>
+                <li><a href="/chefs/list">Chefs</a></li>
+                <li><a href="/about">About us</a></li>
+                <li th:if="${#authorization.expression('isAuthenticated()')}">
+                    <a href="/logout">Logout</a>
+                </li>
+                <li th:if="${#authorization.expression('isAnonymous()')}">
+                    <a href="/login">Login</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
