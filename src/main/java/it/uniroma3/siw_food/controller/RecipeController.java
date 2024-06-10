@@ -5,10 +5,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import it.uniroma3.siw_food.exception.ResourceNotFoundException;
+import it.uniroma3.siw_food.model.Chef;
+import it.uniroma3.siw_food.model.Rating;
 import it.uniroma3.siw_food.model.Recipe;
+import it.uniroma3.siw_food.repository.RatingRepository;
 import it.uniroma3.siw_food.repository.RecipeRepository;
-
+import it.uniroma3.siw_food.repository.ChefRepository;
 import java.util.List;
+import java.util.OptionalDouble;
 
 @Controller
 @RequestMapping("/recipes")
@@ -16,6 +20,12 @@ public class RecipeController {
 
     @Autowired
     private RecipeRepository recipeRepository;
+
+    @Autowired
+    private RatingRepository ratingRepository;
+
+    @Autowired
+    private ChefRepository chefRepository;
 
     @GetMapping("/list")
     public String getAllRecipes(Model model) {
@@ -56,6 +66,13 @@ public class RecipeController {
         recipe.setChef(recipeDetails.getChef());
 
         recipeRepository.save(recipe);
+
+
+        // Actualizar la valoración del chef asociado
+        Chef chef = recipe.getChef();
+        if (chef != null) {
+            ChefController.updateChefRating(chef);
+        }
         return "redirect:/recipes/list";
     }
 
@@ -80,6 +97,38 @@ public class RecipeController {
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe not exist with id :" + id));
         model.addAttribute("recipe", recipe);
+        model.addAttribute("ratings", ratingRepository.findByRecipe(recipe));
         return "recipe-details";
     }
+
+    @PostMapping("/rate/{id}")
+    public String rateRecipe(@PathVariable Long id, @RequestParam("score") int score) {
+        Recipe recipe = recipeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Recipe not exist with id :" + id));
+
+        // Guardar la nueva valoración
+        Rating rating = new Rating(score, recipe);
+        ratingRepository.save(rating);
+
+        // Calcular la media de las valoraciones de la receta
+        List<Rating> ratings = ratingRepository.findByRecipe(recipe);
+        OptionalDouble averageRating = ratings.stream().mapToInt(Rating::getScore).average();
+        recipe.setRating((int) averageRating.orElse(0));
+        recipeRepository.save(recipe);
+
+        // Actualizar la media de las valoraciones del chef
+        Chef chef = recipe.getChef();
+        if (chef != null) {
+            List<Recipe> recipes = chef.getRecipes();
+            OptionalDouble chefAverageRating = recipes.stream()
+                    .filter(r -> r.getRating() > 0) // Filtrar recetas que tengan valoraciones
+                    .mapToInt(Recipe::getRating)
+                    .average();
+            chef.setRating((int) chefAverageRating.orElse(0));
+            chefRepository.save(chef); // Asegurarse de guardar el chef con la nueva media
+        }
+
+        return "redirect:/recipes/" + id;
+    }
+
 }

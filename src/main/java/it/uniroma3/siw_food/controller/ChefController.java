@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import it.uniroma3.siw_food.exception.ResourceNotFoundException;
 import it.uniroma3.siw_food.model.Chef;
+import it.uniroma3.siw_food.model.Recipe;
 import it.uniroma3.siw_food.repository.ChefRepository;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.OptionalDouble;
 
 @Controller
 @RequestMapping("/chefs")
@@ -25,6 +27,7 @@ public class ChefController {
     @Autowired
     private ChefRepository chefRepository;
 
+    // Nueva ruta para listar chefs
     @GetMapping("/list")
     public String getAllChefs(Model model) {
         List<Chef> chefs = chefRepository.findAll();
@@ -118,4 +121,17 @@ public class ChefController {
         model.addAttribute("recipes", chef.getRecipes());
         return "chef-details";
     }
+
+
+    public static void updateChefRating(Chef chef) {
+        if (chef != null) {
+            List<Recipe> recipes = chef.getRecipes();
+            OptionalDouble chefAverageRating = recipes.stream()
+                    .filter(r -> r.getRating() > 0) // Filtrar recetas que tengan valoraciones
+                    .mapToInt(Recipe::getRating)
+                    .average();
+            chef.setRating((int) chefAverageRating.orElse(0));
+        }
+    }
+
 }

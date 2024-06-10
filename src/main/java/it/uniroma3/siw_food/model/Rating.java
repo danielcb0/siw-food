@@ -9,22 +9,18 @@ public class Rating {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int score;
+    private int score; // Valoración de 1 a 5
 
     @ManyToOne
     private Recipe recipe;
-
-    @ManyToOne
-    private Chef chef;
 
     // Constructor sin argumentos (necesario para JPA)
     public Rating() {}
 
     // Constructor con argumentos
-    public Rating(int score, Recipe recipe, Chef chef) {
+    public Rating(int score, Recipe recipe) {
         this.score = score;
         this.recipe = recipe;
-        this.chef = chef;
     }
 
     // Getters y Setters
@@ -50,13 +46,5 @@ public class Rating {
 
     public void setRecipe(Recipe recipe) {
         this.recipe = recipe;
-    }
-
-    public Chef getChef() {
-        return chef;
-    }
-
-    public void setChef(Chef chef) {
-        this.chef = chef;
     }
 }

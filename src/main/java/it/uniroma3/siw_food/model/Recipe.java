@@ -13,6 +13,12 @@ public class Recipe {
     private String name;
     private String description;
 
+    private Integer rating; // Valoración de 1 a 5
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    private List<Rating> ratings;
+
+
     @ElementCollection
     private List<String> photos;
 
@@ -81,5 +87,22 @@ public class Recipe {
 
     public void setChef(Chef chef) {
         this.chef = chef;
+    }
+
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
+    public List<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
     }
 }

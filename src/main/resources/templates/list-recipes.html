@@ -11,27 +11,21 @@
 
 
 <main>
-        <section class="recipes-section">
-            <h2>Recipes</h2>
-            <div class="filter">
-                <label for="filter">Filter by:</label>
-                <select id="filter" name="filter">
-                    <option value="all">All</option>
-                    <option value="time">Preparation Time</option>
-                    <option value="difficulty">Difficulty</option>
-                </select>
-            </div>
-            <div class="recipes-grid">
-                <!-- Cada receta será iterada aquí -->
-                <div class="recipe-card" th:each="recipe : ${recipes}">
+    <section class="recipes-section">
+        <h2>Recipes</h2>
+        <a href="/recipes/new" class="btn">Create New Recipe</a>
+        <div class="recipes-grid">
+            <div class="recipe-card" th:each="recipe : ${recipes}">
+                <a th:href="@{'/recipes/' + ${recipe.id}}">
                     <img th:src="@{${recipe.photos}}" alt="Recipe Photo">
                     <div class="recipe-info">
                         <h3 th:text="${recipe.name}">Recipe Name</h3>
-                        <!--<p th:text="'Prep Time: ' + ${recipe.prepTime} + ' minutes'">Prep Time: XX minutes</p>-->
+                        <p th:text="'Rating: ' + ${recipe.rating}">Rating: 0</p>
                     </div>
-                </div>
+                </a>
             </div>
-        </section>
+        </div>
+    </section>
     </main>
     <footer>
         <p>&copy; 2024 SIW FOOD. All rights reserved.</p>

@@ -39,7 +39,7 @@ public class AuthConfiguration {
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/", "/index", "/login", "/register", "/static/css/**", "/chefs/list", "/chefs", "/recipes/list", "/recipes", "/images/**", "/favicon.ico").permitAll()
-                                .requestMatchers("/chefs/**", "/recipes/**").authenticated()
+                                .requestMatchers("/chefs/**",  "/recipes/**").authenticated()
                                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                                 .anyRequest().authenticated()
                 )
