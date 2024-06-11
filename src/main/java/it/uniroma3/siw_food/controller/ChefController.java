@@ -1,6 +1,8 @@
 package it.uniroma3.siw_food.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -62,6 +64,7 @@ public class ChefController {
         return "redirect:/chefs/list";
     }
 
+
     @GetMapping("/edit/{id}")
     public String editChefForm(@PathVariable Long id, Model model) {
         Chef chef = chefRepository.findById(id)
@@ -81,6 +84,10 @@ public class ChefController {
         chef.setEmail(chefDetails.getEmail());
         chef.setUsername(chefDetails.getUsername());
         chef.setPassword(chefDetails.getPassword());
+
+        // Hash the password before saving
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        chef.setPassword(passwordEncoder.encode(chefDetails.getPassword()));
 
         if (!photo.isEmpty()) {
             try {

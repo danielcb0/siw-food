@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Chefs</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div th:replace="header :: header"></div>
+<main>
+    <h2>List of Chefs</h2>
+    <a href="/admin/chefs/new">Create New Chef</a>
+    <table>
+        <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="chef : ${chefs}">
+            <td th:text="${chef.firstName}"></td>
+            <td th:text="${chef.lastName}"></td>
+            <td th:text="${chef.email}"></td>
+            <td>
+                <a th:href="@{'/admin/chefs/edit/' + ${chef.id}}">Edit</a>
+                <a th:href="@{'/admin/chefs/delete/' + ${chef.id}}">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+
+
+</body>
+</html>

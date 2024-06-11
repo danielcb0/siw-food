@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+
+</head>
+<body>
+<div th:replace="header :: header"></div>
+
+<h1>Admin Panel</h1>
+<ul>
+    <li><a th:href="@{/admin/chefs}">Manage Chefs</a></li>
+    <li><a th:href="@{/admin/recipes}">Manage Recipes</a></li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Recipe</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+
+</head>
+
+<body>
+<div th:replace="header :: header"></div>
+
+ <h1>Create Recipe</h1>
+<form th:action="@{/admin/recipes}" th:object="${recipe}" method="post">
+    <input type="text" th:field="*{name}" placeholder="Title"/>
+    <textarea th:field="*{description}" placeholder="Description"></textarea>
+    <select th:field="*{chef}">
+        <option th:each="chef : ${chefs}" th:value="${chef}" th:text="${chef.firstName} + ' ' + ${chef.lastName}"></option>
+    </select>
+    <button type="submit">Create</button>
+</form>
+</body>
+</html>

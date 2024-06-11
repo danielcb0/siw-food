@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>List of Recipes</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div th:replace="header :: header"></div>
+
+ <h1>List of Recipes</h1>
+<a href="/admin/recipes/new">Create New Chef</a>
+
+<table>
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="recipe : ${recipes}">
+        <td th:text="${recipe.name}"></td>
+        <td th:text="${recipe.description}"></td>
+        <td>
+            <a th:href="@{/admin/recipes/edit/{id}(id=${recipe.id})}">Edit</a>
+            <a th:href="@{/admin/recipes/delete/{id}(id=${recipe.id})}">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+ </body>
+</html>

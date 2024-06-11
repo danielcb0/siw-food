@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-    <div th:replace="header :: header"></div>
+<div th:replace="header :: header"></div>
 
 <main>
     <section class="form-section">
@@ -32,7 +32,7 @@
             <input type="password" id="password" name="password" th:field="*{password}" required>
 
             <label for="photo">Photo:</label>
-            <input type="file" id="photo" name="photo" accept="image/*" required>
+            <input type="file" id="photo" name="photo" accept="image/*" >
 
             <button type="submit">Save</button>
         </form>

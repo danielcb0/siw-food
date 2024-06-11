@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Delete Recipe</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+
+</head>
+<body>
+<div th:replace="header :: header"></div>
+
+ <h1>Delete Recipe</h1>
+<form th:action="@{/admin/recipes/delete/{id}(id=${recipe.id})}" method="post">
+    <p>Are you sure you want to delete the recipe <strong th:text="${recipe.title}">Recipe Title</strong>?</p>
+    <button type="submit">Delete</button>
+    <a href="/admin/recipes">Cancel</a>
+</form>
+ </body>
+</html>

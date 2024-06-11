@@ -1,6 +1,3 @@
-
-
-
 <header>
     <div class="container">
         <div class="logo">
@@ -12,6 +9,12 @@
                 <li><a href="/recipes/list">Recipes</a></li>
                 <li><a href="/chefs/list">Chefs</a></li>
                 <li><a href="/about">About us</a></li>
+                <li th:if="${#authorization.expression('isAuthenticated()') and #authorization.expression('hasAuthority(''ADMIN'')')}">
+                    <a href="/admin">Admin Panel</a>
+                </li>
+                <li th:if="${#authorization.expression('isAuthenticated()') and !#authorization.expression('hasAuthority(''ADMIN'')')}">
+                    <a th:href="@{'/chefs/edit/' + ${id}}">Profile</a>
+                </li>
                 <li th:if="${#authorization.expression('isAuthenticated()')}">
                     <a href="/logout">Logout</a>
                 </li>

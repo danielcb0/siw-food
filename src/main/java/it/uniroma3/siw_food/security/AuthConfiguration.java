@@ -38,9 +38,9 @@ public class AuthConfiguration {
                 .csrf().disable()
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/", "/index", "/login", "/register", "/static/css/**", "/chefs/list", "/chefs", "/recipes/list", "/recipes", "/images/**", "/favicon.ico").permitAll()
+                                .requestMatchers("/", "/index", "/login", "/register", "/static/css/**", "/chefs/list", "/chefs", "/recipes/list", "/recipes", "/static/images/**", "/favicon.ico").permitAll()
                                 .requestMatchers("/chefs/**",  "/recipes/**").authenticated()
-                                .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                                .requestMatchers("/admin/**", "/admin/chefs/**", "/admin/recipes/**").hasAuthority("ADMIN")
                                 .anyRequest().authenticated()
                 )
                 .formLogin(formLogin ->

@@ -14,7 +14,7 @@ public class Chef {
     private String firstName;
     private String lastName;
     private LocalDate dateOfBirth;
-    private String photo;
+    private String photo;  // Este campo es solo String
     private String email;
     private String username;
     private String password;

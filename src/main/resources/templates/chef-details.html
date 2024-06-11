@@ -3,32 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Chef - SIW FOOD</title>
-    <link rel="stylesheet" href="/static/css/chefs.css">
+    <title>Chef Details</title>
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-    <div th:replace="header :: header"></div>
+<!-- Header -->
+<div th:replace="header :: header"></div>
 
-<main>
-    <section class="form-section">
-        <h2>Create New Chef</h2>
-        <form th:action="@{/chefs}" th:object="${chef}" method="post" enctype="multipart/form-data">
-            <label for="firstName">First Name:</label>
-            <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required>
+<div class="container">
+    <div class="profile">
+        <div class="profile-sidebar">
+            <div class="profile-photo">
+                <img th:src="${chef.photo != null ? '/static/images/' + chef.photo : '/static/images/generic-chef.jpg'}" alt="Chef Photo">
+            </div>
+            <div class="profile-name">
+                <h2 th:text="${chef.firstName + ' ' + chef.lastName}"></h2>
+            </div>
+        </div>
+        <div class="profile-content">
+            <div class="about-section">
+                <h3>About</h3>
+                <p><strong>Full Name:</strong> <span th:text="${chef.firstName + ' ' + chef.lastName}"></span></p>
+                <p><strong>Email:</strong> <span th:text="${chef.email}"></span></p>
+                <p><strong>Rating:</strong> <span th:text="${chef.rating}"></span></p>
+            </div>
+            <div class="recipes-section">
+                <h3>Recipes</h3>
+                <div class="recipes-list">
+                    <div th:each="recipe : ${chef.recipes}">
+                        <p><a th:href="@{/recipes/{id}(id=${recipe.id})}" th:text="${recipe.name}"></a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-            <label for="lastName">Last Name:</label>
-            <input type="text" id="lastName" name="lastName" th:field="*{lastName}" required>
-
-            <label for="dateOfBirth">Date of Birth:</label>
-            <input type="date" id="dateOfBirth" name="dateOfBirth" th:field="*{dateOfBirth}" required>
-
-            <label for="photo">Photo:</label>
-            <input type="file" id="photo" name="photo" accept="image/*" required>
-
-            <button type="submit">Save</button>
-        </form>
-    </section>
-</main>
 <footer>
     <p>&copy; 2024 SIW FOOD. All rights reserved.</p>
 </footer>

@@ -1,56 +1,37 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recipe Details</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 </head>
 <body>
-<header>
-    <div class="container">
-        <div class="logo">
-            <h1>SIW FOOD</h1>
+<!-- Header -->
+<div th:replace="header :: header"></div>
+
+<div class="container">
+    <div class="recipe-details">
+        <h1 th:text="${recipe.name}"></h1>
+        <div class="recipe-rating">
+                <span th:each="star : ${#numbers.sequence(1, 5)}">
+                    <i th:class="${star <= recipe.rating} ? 'fas fa-star' : 'far fa-star'"></i>
+                </span>
         </div>
-        <nav>
+        <div class="recipe-photo">
+            <img th:src="${recipe.photo != null ? '/static/images/' + recipe.photo : '/static/images/recipe-generic.svg'}" alt="Recipe Photo">
+        </div>
+        <div class="recipe-description">
+            <h2>Ingredients</h2>
             <ul>
-                <li><a href="/">Homepage</a></li>
-                <li><a href="/recipes/list">Recipes</a></li>
-                <li><a href="/chefs/list">Chefs</a></li>
-                <li><a href="/about">About us</a></li>
-                <li th:if="${#authorization.expression('isAuthenticated()')}">
-                    <a href="/logout">Logout</a>
-                </li>
-                <li th:if="${#authorization.expression('isAnonymous()')}">
-                    <a href="/login">Login</a>
-                </li>
+                <li th:each="ingredient : ${recipe.ingredients}" th:text="${ingredient}"></li>
             </ul>
-        </nav>
+            <h2>Description</h2>
+            <p th:text="${recipe.description}"></p>
+        </div>
     </div>
-</header>
-
-<main>
-    <section class="recipe-details">
-        <h2 th:text="${recipe.name}">Recipe Name</h2>
-        <p th:text="${recipe.description}">Recipe Description</p>
-        <p><strong>Ingredients:</strong> <span th:text="${recipe.ingredients}">Ingredients</span></p>
-        <p><strong>Rating:</strong> <span th:text="${recipe.rating}">Rating</span></p>
-
-        <h3>Rate this Recipe</h3>
-        <form th:action="@{/recipes/rate/{id}(id=${recipe.id})}" method="post">
-            <label for="score">Rating (1-5):</label>
-            <input type="number" id="score" name="score" min="1" max="5" required>
-            <button type="submit">Submit</button>
-        </form>
-
-        <h3>Ratings</h3>
-        <ul>
-            <li th:each="rating : ${ratings}">
-                <span th:text="${rating.score}">Score</span>
-            </li>
-        </ul>
-    </section>
-</main>
+</div>
 
 <footer>
     <p>&copy; 2024 SIW FOOD. All rights reserved.</p>
