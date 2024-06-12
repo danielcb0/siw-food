@@ -3,15 +3,29 @@
 <head>
     <title>Admin Panel</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/admin.css">
+
 
 </head>
 <body>
 <div th:replace="header :: header"></div>
 
-<h1>Admin Panel</h1>
-<ul>
-    <li><a th:href="@{/admin/chefs}">Manage Chefs</a></li>
-    <li><a th:href="@{/admin/recipes}">Manage Recipes</a></li>
-</ul>
+<header>
+    <h1>Admin Panel</h1>
+</header>
+
+
+
+<main>
+    <h2>Welcome to the Admin Panel</h2>
+    <div class="action-links">
+        <a th:href="@{/admin/chefs}"><i class="fas fa-user-cog"></i> Manage Chefs</a>
+        <a th:href="@{/admin/recipes}"><i class="fas fa-utensils"></i> Manage Recipes</a>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2024 Your Company. All rights reserved.</p>
+</footer>
 </body>
 </html>

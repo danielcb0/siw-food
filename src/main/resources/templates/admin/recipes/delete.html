@@ -1,18 +1,29 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delete Recipe</title>
     <link rel="stylesheet" href="/static/css/style.css">
-
+    <link rel="stylesheet" href="/static/css/admin.css">
 </head>
 <body>
 <div th:replace="header :: header"></div>
 
- <h1>Delete Recipe</h1>
-<form th:action="@{/admin/recipes/delete/{id}(id=${recipe.id})}" method="post">
+<main>
+    <h2>Delete Recipe</h2>
     <p>Are you sure you want to delete the recipe <strong th:text="${recipe.name}">Recipe Title</strong>?</p>
-    <button type="submit">Delete</button>
-    <a href="/admin/recipes">Cancel</a>
-</form>
- </body>
+    <form th:action="@{/admin/recipes/delete/{id}(id=${recipe.id})}" method="post" class="form-container">
+        <div class="action-links">
+            <button type="submit" class="btn btn-delete"><i class="fas fa-trash-alt"></i> Delete</button>
+            <a href="/admin/recipes" class="btn btn-cancel"><i class="fas fa-times"></i> Cancel</a>
+        </div>
+    </form>
+</main>
+
+<footer>
+    <p>&copy; 2024 Your Company. All rights reserved.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+</body>
 </html>

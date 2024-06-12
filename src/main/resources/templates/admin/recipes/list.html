@@ -1,33 +1,44 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>List of Recipes</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/admin.css">
 </head>
 <body>
 <div th:replace="header :: header"></div>
-
- <h1>List of Recipes</h1>
-<a href="/admin/recipes/new">Create New Chef</a>
-
-<table>
-    <thead>
-    <tr>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="recipe : ${recipes}">
-        <td th:text="${recipe.name}"></td>
-        <td th:text="${recipe.description}"></td>
-        <td>
-            <a th:href="@{/admin/recipes/edit/{id}(id=${recipe.id})}">Edit</a>
-            <a th:href="@{/admin/recipes/delete/{id}(id=${recipe.id})}">Delete</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
- </body>
+<main>
+    <h2>List of Recipes</h2>
+    <div class="action-links">
+        <a href="/admin/recipes/new" class="btn"><i class="fas fa-plus"></i> Create New Recipe</a>
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="recipe : ${recipes}">
+            <td th:text="${recipe.name}"></td>
+            <td th:text="${recipe.description}"></td>
+            <td>
+                <div class="action-links">
+                    <a th:href="@{/admin/recipes/edit/{id}(id=${recipe.id})}" class="btn btn-edit"><i class="fas fa-edit"></i> Edit</a>
+                    <a th:href="@{/admin/recipes/delete/{id}(id=${recipe.id})}" class="btn btn-delete"><i class="fas fa-trash-alt"></i> Delete</a>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+<footer>
+    <p>&copy; 2024 Your Company. All rights reserved.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+</body>
 </html>

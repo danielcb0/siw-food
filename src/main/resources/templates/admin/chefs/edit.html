@@ -1,25 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Chef</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/admin.css">
 </head>
 <body>
 <div th:replace="header :: header"></div>
 
- <main>
+<main>
     <h2>Edit Chef</h2>
-    <form th:action="@{/admin/chefs/update/{id}(id=${chef.id})}" th:object="${chef}" method="post">
+    <form th:action="@{/admin/chefs/update/{id}(id=${chef.id})}" th:object="${chef}" method="post" class="form-container">
         <label for="firstName">First Name:</label>
         <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required>
+
         <label for="lastName">Last Name:</label>
         <input type="text" id="lastName" name="lastName" th:field="*{lastName}" required>
+
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" th:field="*{email}" required>
-        <button type="submit">Update</button>
+
+        <div class="action-links">
+            <button type="submit" class="btn"><i class="fas fa-save"></i> Update</button>
+            <a href="/admin/chefs" class="btn btn-cancel"><i class="fas fa-times"></i> Cancel</a>
+        </div>
     </form>
 </main>
- </body>
+
+<footer>
+    <p>&copy; 2024 Your Company. All rights reserved.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+</body>
 </html>

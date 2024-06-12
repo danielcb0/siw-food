@@ -1,21 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delete Chef</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/admin.css">
 </head>
 <body>
 <div th:replace="header :: header"></div>
 
- <main>
+<main>
     <h2>Delete Chef</h2>
     <p>Are you sure you want to delete this chef?</p>
-    <form th:action="@{/admin/chefs/delete/{id}(id=${chef.id})}" method="post">
+    <form th:action="@{/admin/chefs/delete/{id}(id=${chef.id})}" method="post" class="form-container">
         <p th:text="${chef.firstName} + ' ' + ${chef.lastName}"></p>
-        <button type="submit">Delete</button>
+        <div class="action-links">
+            <button type="submit" class="btn btn-delete"><i class="fas fa-trash-alt"></i> Delete</button>
+            <a href="/admin/chefs" class="btn btn-cancel"><i class="fas fa-times"></i> Cancel</a>
+        </div>
     </form>
 </main>
- </body>
+
+<footer>
+    <p>&copy; 2024 Your Company. All rights reserved.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+</body>
 </html>

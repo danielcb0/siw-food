@@ -1,21 +1,39 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Recipe</title>
     <link rel="stylesheet" href="/static/css/style.css">
-
+    <link rel="stylesheet" href="/static/css/admin.css">
 </head>
 <body>
 <div th:replace="header :: header"></div>
 
- <h1>Edit Recipe</h1>
-<form th:action="@{/admin/recipes/update/{id}(id=${recipe.id})}" th:object="${recipe}" method="post">
-    <input type="text" th:field="*{name}" placeholder="Title"/>
-    <textarea th:field="*{description}" placeholder="Description"></textarea>
-    <select th:field="*{chef}">
-        <option th:each="chef : ${chefs}" th:value="${chef}" th:text="${chef.firstName} + ' ' + ${chef.lastName}"></option>
-    </select>
-    <button type="submit">Update</button>
-</form>
- </body>
+<main>
+    <h2>Edit Recipe</h2>
+    <form th:action="@{/admin/recipes/update/{id}(id=${recipe.id})}" th:object="${recipe}" method="post" class="form-container">
+        <label for="name">Title:</label>
+        <input type="text" id="name" th:field="*{name}" placeholder="Title" required>
+
+        <label for="description">Description:</label>
+        <textarea id="description" th:field="*{description}" placeholder="Description" required></textarea>
+
+        <label for="chef">Chef:</label>
+        <select id="chef" th:field="*{chef}">
+            <option th:each="chef : ${chefs}" th:value="${chef}" th:text="${chef.firstName} + ' ' + ${chef.lastName}"></option>
+        </select>
+
+        <div class="action-links">
+            <button type="submit" class="btn"><i class="fas fa-save"></i> Update</button>
+            <a href="/admin/recipes" class="btn btn-cancel"><i class="fas fa-times"></i> Cancel</a>
+        </div>
+    </form>
+</main>
+
+<footer>
+    <p>&copy; 2024 Your Company. All rights reserved.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+</body>
 </html>

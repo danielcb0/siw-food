@@ -1,0 +1,103 @@
+/* admin.css */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+main {
+    padding: 20px;
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+h2 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-container label {
+    margin-top: 10px;
+}
+
+.form-container input,
+.form-container textarea,
+.form-container select {
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.action-links {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.action-links a, .action-links button {
+    text-decoration: none;
+    color: #fff;
+    background-color: #007bff;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    border: none;
+    cursor: pointer;
+}
+
+.action-links a:hover, .action-links button:hover {
+    background-color: #0056b3;
+}
+
+.action-links .btn-cancel {
+    background-color: #dc3545;
+}
+
+.action-links .btn-cancel:hover {
+    background-color: #c82333;
+}
+
+.action-links .btn-edit {
+    background-color: #28a745;
+}
+
+.action-links .btn-edit:hover {
+    background-color: #218838;
+}
+
+.action-links .btn-delete {
+    background-color: #dc3545;
+}
+
+footer {
+    text-align: center;
+    padding: 10px 0;
+    background-color: #333;
+    color: #fff;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
