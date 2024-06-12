@@ -1,5 +1,6 @@
 package it.uniroma3.siw_food.controller;
 
+import it.uniroma3.siw_food.service.ChefService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +29,9 @@ public class ChefController {
 
     @Autowired
     private ChefRepository chefRepository;
+
+    @Autowired
+    private ChefService chefService;
 
     // Nueva ruta para listar chefs
     @GetMapping("/list")
@@ -63,7 +67,6 @@ public class ChefController {
 
         return "redirect:/chefs/list";
     }
-
 
     @GetMapping("/edit/{id}")
     public String editChefForm(@PathVariable Long id, Model model) {
@@ -129,6 +132,14 @@ public class ChefController {
         return "chef-details";
     }
 
+    @GetMapping("/{id}/edit")
+    public String editChef(@PathVariable Long id, Model model) {
+        Chef chef = chefService.findById(id);
+        model.addAttribute("chef", chef);
+        return "edit-chef-owner";
+    }
+
+
 
     public static void updateChefRating(Chef chef) {
         if (chef != null) {
@@ -141,4 +152,26 @@ public class ChefController {
         }
     }
 
+
+
+    @GetMapping("/{id}/upload-recipe")
+    public String createRecipeForChefForm(@PathVariable Long id, Model model) {
+        Chef chef = chefRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Chef not exist with id :" + id));
+        Recipe recipe = new Recipe();
+        recipe.setChef(chef);  // Asociar la receta con el chef actual
+        model.addAttribute("recipe", recipe);
+        model.addAttribute("chefId", id);  // Pasar el id del chef a la vista
+        return "upload-recipechef";
+    }
+
+    @PostMapping("/{id}/upload-recipe")
+    public String saveRecipeForChef(@PathVariable Long id, @ModelAttribute("recipe") Recipe recipe) {
+        Chef chef = chefRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Chef not exist with id :" + id));
+        recipe.setChef(chef);  // Asociar la receta con el chef actual
+        chef.getRecipes().add(recipe);  // Añadir la receta a la lista de recetas del chef
+        chefRepository.save(chef);  // Guardar el chef con la nueva receta
+        return "redirect:/chefs/" + id;  // Redirigir a la página de detalles del chef
+    }
 }

@@ -7,8 +7,10 @@ import it.uniroma3.siw_food.repository.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+ import java.util.List;
 @Service
 public class ChefService {
 
@@ -26,7 +28,17 @@ public class ChefService {
         return chefRepository.save(chef);
     }
 
-
+    public Chef getAuthenticatedChef() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof UserDetails) {
+                String username = ((UserDetails) principal).getUsername();
+                return chefRepository.findByUsername(username);
+            }
+        }
+        return null;
+    }
 
     @Transactional
     public void updateChefRating(Long chefId) {
@@ -38,6 +50,23 @@ public class ChefService {
                     .average()
                     .orElse(0.0);
             chef.setRating((int) Math.round(averageRating));
+            chefRepository.save(chef);
+        }
+    }
+
+
+    public Chef findById(Long id) {
+        return chefRepository.findById(id).orElse(null);
+    }
+
+    public void updateChef(Long id, Chef updatedChef) {
+        Chef chef = chefRepository.findById(id).orElse(null);
+        if (chef != null) {
+            chef.setFirstName(updatedChef.getFirstName());
+            chef.setLastName(updatedChef.getLastName());
+            chef.setEmail(updatedChef.getEmail());
+            chef.setPhoto(updatedChef.getPhoto());
+            chef.setPassword(updatedChef.getPassword());
             chefRepository.save(chef);
         }
     }

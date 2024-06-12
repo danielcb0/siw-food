@@ -77,10 +77,16 @@ public class AdminController {
     @PostMapping("/chefs/delete/{id}")
     public String deleteChef(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Chef chef = chefRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid chef Id:" + id));
+        List<Recipe> recipes = recipeRepository.findByChefId(id);
+
+        // Eliminar todas las recetas asociadas al chef
+        recipeRepository.deleteAll(recipes);
+
         chefRepository.delete(chef);
         redirectAttributes.addFlashAttribute("message", "Chef deleted successfully!");
         return "redirect:/admin/chefs";
     }
+
 
     // CRUD operations for Recipes
     @GetMapping("/recipes")

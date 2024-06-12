@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Recipe</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div th:replace="header :: header"></div>
+
+<div class="container">
+    <h2>Upload Recipe</h2>
+    <form th:action="@{/chefs/{id}/upload-recipe(id=${chefId})}" method="post" enctype="multipart/form-data">
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" th:value="${recipe.name}">
+        </div>
+        <div>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" th:text="${recipe.description}"></textarea>
+        </div>
+        <div>
+            <label for="photos">Photos:</label>
+            <input type="file" id="photos" name="photos" multiple>
+        </div>
+        <div>
+            <label for="ingredients">Ingredients (comma separated):</label>
+            <input type="text" id="ingredients" name="ingredients" th:value="${recipe.ingredients}">
+        </div>
+        <div>
+            <button type="submit">Upload Recipe</button>
+        </div>
+    </form>
+</div>
+
+<footer>
+    <p>&copy; 2024 SIW FOOD. All rights reserved.</p>
+</footer>
+</body>
+</html>

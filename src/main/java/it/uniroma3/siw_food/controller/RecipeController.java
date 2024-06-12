@@ -1,5 +1,6 @@
 package it.uniroma3.siw_food.controller;
 
+import it.uniroma3.siw_food.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +27,9 @@ public class RecipeController {
 
     @Autowired
     private ChefRepository chefRepository;
+
+    @Autowired
+    private RecipeService recipeService;
 
     @GetMapping("/list")
     public String getAllRecipes(Model model) {
@@ -129,6 +133,19 @@ public class RecipeController {
         }
 
         return "redirect:/recipes/" + id;
+    }
+
+
+    @GetMapping("/upload")
+    public String uploadRecipeForm(Model model) {
+        model.addAttribute("recipe", new Recipe());
+        return "upload-recipechef";
+    }
+
+    @PostMapping("/upload")
+    public String uploadRecipe(@ModelAttribute Recipe recipe, @RequestParam Long chefId) {
+        recipeService.saveRecipe(recipe, chefId);
+        return "redirect:/chefs/" + chefId;
     }
 
 }

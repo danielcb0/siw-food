@@ -10,7 +10,7 @@
 
  <h1>Delete Recipe</h1>
 <form th:action="@{/admin/recipes/delete/{id}(id=${recipe.id})}" method="post">
-    <p>Are you sure you want to delete the recipe <strong th:text="${recipe.title}">Recipe Title</strong>?</p>
+    <p>Are you sure you want to delete the recipe <strong th:text="${recipe.name}">Recipe Title</strong>?</p>
     <button type="submit">Delete</button>
     <a href="/admin/recipes">Cancel</a>
 </form>
