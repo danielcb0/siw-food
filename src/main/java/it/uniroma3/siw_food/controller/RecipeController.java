@@ -1,17 +1,22 @@
 package it.uniroma3.siw_food.controller;
 
+import it.uniroma3.siw_food.model.Chef;
+import it.uniroma3.siw_food.model.Ingredient;
+import it.uniroma3.siw_food.model.Rating;
+import it.uniroma3.siw_food.model.Recipe;
+import it.uniroma3.siw_food.repository.ChefRepository;
+import it.uniroma3.siw_food.repository.RatingRepository;
+import it.uniroma3.siw_food.repository.RecipeRepository;
 import it.uniroma3.siw_food.service.RecipeService;
+import it.uniroma3.siw_food.service.ChefService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import it.uniroma3.siw_food.exception.ResourceNotFoundException;
-import it.uniroma3.siw_food.model.Chef;
-import it.uniroma3.siw_food.model.Rating;
-import it.uniroma3.siw_food.model.Recipe;
-import it.uniroma3.siw_food.repository.RatingRepository;
-import it.uniroma3.siw_food.repository.RecipeRepository;
-import it.uniroma3.siw_food.repository.ChefRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalDouble;
 
@@ -27,6 +32,8 @@ public class RecipeController {
 
     @Autowired
     private ChefRepository chefRepository;
+    @Autowired
+    private ChefService chefService;
 
     @Autowired
     private RecipeService recipeService;
@@ -41,36 +48,57 @@ public class RecipeController {
     @GetMapping("/new")
     public String createRecipeForm(Model model) {
         model.addAttribute("recipe", new Recipe());
+        model.addAttribute("ingredient", new Ingredient());
         return "create-recipe";
     }
 
     @PostMapping
-    public String createRecipe(@ModelAttribute("recipe") Recipe recipe) {
+    public String createRecipe(@ModelAttribute("recipe") Recipe recipe,
+                               @RequestParam("ingredientName") List<String> ingredientNames,
+                               @RequestParam("ingredientQuantity") List<String> ingredientQuantities) {
+        Chef authenticatedChef = chefService.getAuthenticatedChef();
+        if (authenticatedChef == null) {
+            // Manejar el caso donde no hay chef autenticado
+            return "redirect:/login";
+        }
+
+        List<Ingredient> ingredients = new ArrayList<>();
+        for (int i = 0; i < ingredientNames.size(); i++) {
+            ingredients.add(new Ingredient(ingredientNames.get(i), ingredientQuantities.get(i), recipe));
+        }
+        recipe.setIngredients(ingredients);
+        recipe.setChef(authenticatedChef); // Asociar la receta con el chef autenticado
         recipeRepository.save(recipe);
         return "redirect:/recipes/list";
     }
+
 
     @GetMapping("/edit/{id}")
     public String editRecipeForm(@PathVariable Long id, Model model) {
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe not exist with id :" + id));
         model.addAttribute("recipe", recipe);
+        model.addAttribute("ingredient", new Ingredient());
         return "edit-recipe";
     }
 
     @PostMapping("/update/{id}")
-    public String updateRecipe(@PathVariable Long id, @ModelAttribute("recipe") Recipe recipeDetails) {
+    public String updateRecipe(@PathVariable Long id, @ModelAttribute("recipe") Recipe recipeDetails, @RequestParam("ingredientName") List<String> ingredientNames, @RequestParam("ingredientQuantity") List<String> ingredientQuantities) {
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe not exist with id :" + id));
 
         recipe.setName(recipeDetails.getName());
         recipe.setDescription(recipeDetails.getDescription());
         recipe.setPhotos(recipeDetails.getPhotos());
-        recipe.setIngredients(recipeDetails.getIngredients());
         recipe.setChef(recipeDetails.getChef());
 
-        recipeRepository.save(recipe);
+        List<Ingredient> ingredients = new ArrayList<>();
+        for (int i = 0; i < ingredientNames.size(); i++) {
+            ingredients.add(new Ingredient(ingredientNames.get(i), ingredientQuantities.get(i), recipe));
+        }
+        recipe.setIngredients(ingredients);
 
+        recipeRepository.save(recipe);
 
         // Actualizar la valoración del chef asociado
         Chef chef = recipe.getChef();
@@ -134,18 +162,4 @@ public class RecipeController {
 
         return "redirect:/recipes/" + id;
     }
-
-
-    @GetMapping("/upload")
-    public String uploadRecipeForm(Model model) {
-        model.addAttribute("recipe", new Recipe());
-        return "upload-recipechef";
-    }
-
-    @PostMapping("/upload")
-    public String uploadRecipe(@ModelAttribute Recipe recipe, @RequestParam Long chefId) {
-        recipeService.saveRecipe(recipe, chefId);
-        return "redirect:/chefs/" + chefId;
-    }
-
 }

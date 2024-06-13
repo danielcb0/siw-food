@@ -1,36 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Recipe - SIW FOOD</title>
+    <title>Create Recipe</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/admin.css">
 </head>
 <body>
-    <div th:replace="header :: header"></div>
+<div th:replace="header :: header"></div>
 
 <main>
-    <section class="form-section">
-        <h2>Create New Recipe</h2>
-        <form th:action="@{/recipes}" th:object="${recipe}" method="post" enctype="multipart/form-data">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" th:field="*{name}" required>
+    <h2>Create Recipe</h2>
+    <form th:action="@{/recipes}" th:object="${recipe}" method="post" class="form-container">
+        <label for="name">Title:</label>
+        <input type="text" id="name" th:field="*{name}" placeholder="Title" required>
 
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" th:field="*{description}" required></textarea>
+        <label for="description">Description:</label>
+        <textarea id="description" th:field="*{description}" placeholder="Description" required></textarea>
 
-            <label for="duration">Duration (minutes):</label>
-            <input type="number" id="duration" name="duration" th:field="*{duration}" required>
+        <label for="chef">Chef:</label>
+        <select id="chef" th:field="*{chef}">
+            <option th:each="chef : ${chefs}" th:value="${chef}" th:text="${chef.firstName} + ' ' + ${chef.lastName}"></option>
+        </select>
 
-            <label for="photo">Photo:</label>
-            <input type="file" id="photo" name="photo" accept="image/*" required>
+        <div id="ingredients">
+            <div class="ingredient">
+                <label for="ingredientName1">Ingredient Name:</label>
+                <input type="text" id="ingredientName1" name="ingredientName" placeholder="Ingredient Name" required>
+                <label for="ingredientQuantity1">Quantity:</label>
+                <input type="text" id="ingredientQuantity1" name="ingredientQuantity" placeholder="Quantity" required>
+            </div>
+        </div>
+        <button type="button" onclick="addIngredient()">Add Ingredient</button>
 
-            <button type="submit">Save</button>
-        </form>
-    </section>
+        <div class="action-links">
+            <button type="submit" class="btn"><i class="fas fa-save"></i> Create</button>
+            <a href="/recipes/list" class="btn btn-cancel"><i class="fas fa-times"></i> Cancel</a>
+        </div>
+    </form>
 </main>
+
 <footer>
-    <p>&copy; 2024 SIW FOOD. All rights reserved.</p>
+    <p>&copy; 2024 Your Company. All rights reserved.</p>
 </footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+<script>
+    let ingredientIndex = 1;
+    function addIngredient() {
+        ingredientIndex++;
+        const ingredientsDiv = document.getElementById('ingredients');
+        const newIngredientDiv = document.createElement('div');
+        newIngredientDiv.classList.add('ingredient');
+        newIngredientDiv.innerHTML = `
+            <label for="ingredientName${ingredientIndex}">Ingredient Name:</label>
+            <input type="text" id="ingredientName${ingredientIndex}" name="ingredientName" placeholder="Ingredient Name"  >
+            <label for="ingredientQuantity${ingredientIndex}">Quantity:</label>
+            <input type="text" id="ingredientQuantity${ingredientIndex}" name="ingredientQuantity" placeholder="Quantity"  >
+        `;
+        ingredientsDiv.appendChild(newIngredientDiv);
+    }
+</script>
 </body>
 </html>

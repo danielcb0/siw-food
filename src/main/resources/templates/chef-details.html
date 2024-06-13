@@ -27,6 +27,15 @@
         .profile-options {
             margin-top: 20px;
         }
+
+        .edit-button {
+            background-color: #28a745;
+            margin-left: 10px;
+        }
+
+        .edit-button:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 <body>
@@ -45,7 +54,7 @@
             <!-- Opciones para editar perfil y subir receta -->
             <div class="profile-options">
                 <a th:href="@{/chefs/{id}/edit(id=${chef.id})}" class="button">Edit Profile</a>
-                <a th:href="@{/chefs/{id}/upload-recipe(id=${chef.id})}" class="button">Upload Recipe</a>
+                <a href="/recipes/new" class="button">Upload Recipe</a>
             </div>
         </div>
         <div class="profile-content">
@@ -59,7 +68,10 @@
                 <h3>Recipes</h3>
                 <div class="recipes-list">
                     <div th:each="recipe : ${chef.recipes}">
-                        <p><a th:href="@{/recipes/{id}(id=${recipe.id})}" th:text="${recipe.name}"></a></p>
+                        <p>
+                            <a th:href="@{/recipes/{id}(id=${recipe.id})}" th:text="${recipe.name}"></a>
+                            <a th:href="@{/recipes/edit/{id}(id=${recipe.id})}" class="button edit-button">Edit</a>
+                        </p>
                     </div>
                 </div>
             </div>

@@ -15,14 +15,13 @@ public class Recipe {
 
     private Integer rating; // Valoración de 1 a 5
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Rating> ratings;
-
 
     @ElementCollection
     private List<String> photos;
 
-    @OneToMany
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ingredient> ingredients;
 
     @ManyToOne
@@ -88,7 +87,6 @@ public class Recipe {
     public void setChef(Chef chef) {
         this.chef = chef;
     }
-
 
     public Integer getRating() {
         return rating;

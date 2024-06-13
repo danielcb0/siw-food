@@ -12,13 +12,17 @@ public class Ingredient {
     private String name;
     private String quantity;
 
+    @ManyToOne
+    private Recipe recipe;
+
     // Constructor sin argumentos (necesario para JPA)
     public Ingredient() {}
 
     // Constructor con argumentos
-    public Ingredient(String name, String quantity) {
+    public Ingredient(String name, String quantity, Recipe recipe) {
         this.name = name;
         this.quantity = quantity;
+        this.recipe = recipe;
     }
 
     // Getters y Setters
@@ -44,5 +48,13 @@ public class Ingredient {
 
     public void setQuantity(String quantity) {
         this.quantity = quantity;
+    }
+
+    public Recipe getRecipe() {
+        return recipe;
+    }
+
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
     }
 }

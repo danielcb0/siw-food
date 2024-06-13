@@ -49,7 +49,12 @@
     <section class="recipe-details">
         <h2 th:text="${recipe.name}">Recipe Name</h2>
         <p th:text="${recipe.description}">Recipe Description</p>
-        <p><strong>Ingredients:</strong> <span th:text="${recipe.ingredients}">Ingredients</span></p>
+        <p><strong>Ingredients:</strong></p>
+        <ul>
+            <li th:each="ingredient : ${recipe.ingredients}">
+                <span th:text="${ingredient.name}">Ingredient Name</span>: <span th:text="${ingredient.quantity}">Quantity</span>
+            </li>
+        </ul>
         <p><strong>Rating:</strong> <span th:text="${recipe.rating}">Rating</span></p>
 
         <h3>Rate this Recipe</h3>
