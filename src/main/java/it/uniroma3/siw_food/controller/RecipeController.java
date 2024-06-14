@@ -10,11 +10,13 @@ import it.uniroma3.siw_food.repository.RecipeRepository;
 import it.uniroma3.siw_food.service.RecipeService;
 import it.uniroma3.siw_food.service.ChefService;
 
+import it.uniroma3.siw_food.service.UploadFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import it.uniroma3.siw_food.exception.ResourceNotFoundException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -37,6 +39,9 @@ public class RecipeController {
     private ChefService chefService;
 
     @Autowired
+    private UploadFileService uploadFileService;
+
+    @Autowired
     private RecipeService recipeService;
 
     @GetMapping("/list")
@@ -56,12 +61,19 @@ public class RecipeController {
     @PostMapping
     public String createRecipe(@ModelAttribute("recipe") Recipe recipe,
                                @RequestParam("ingredientName") List<String> ingredientNames,
-                               @RequestParam("ingredientQuantity") List<String> ingredientQuantities) {
+                               @RequestParam("ingredientQuantity") List<String> ingredientQuantities,
+                               @RequestParam("file") MultipartFile file) {
         Chef authenticatedChef = chefService.getAuthenticatedChef();
         if (authenticatedChef == null) {
             // Manejar el caso donde no hay chef autenticado
             return "redirect:/login";
         }
+
+        // Guardar el archivo y obtener el nombre del archivo
+        String filename = uploadFileService.store(file);
+
+        // Asignar el nombre del archivo al campo photo del chef
+        recipe.setPhoto(filename);
 
         List<Ingredient> ingredients = new ArrayList<>();
         for (int i = 0; i < ingredientNames.size(); i++) {

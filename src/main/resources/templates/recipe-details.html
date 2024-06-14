@@ -6,20 +6,122 @@
     <title>Recipe Details</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <style>
-        .chef-info {
-            border: 1px solid #ccc;
+        .recipe-details-container {
+            display: grid;
+            grid-template-columns: 2fr 2fr;
+            gap: 20px;
+            max-width: 1200px;
+            margin: auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .recipe-details-left {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .recipe-details-left img {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .recipe-details-left h2 {
+            color: #ff6f61;
+            font-size: 2.5em;
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .recipe-details-left ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .recipe-details-left ul li {
+            font-size: 1.2em;
+            line-height: 1.8;
+            background: #f9f9f9;
             padding: 10px;
-            margin-top: 20px;
-            cursor: pointer;
-            transition: box-shadow 0.3s ease;
+            border-radius: 8px;
+            margin-bottom: 10px;
         }
-        .chef-info:hover {
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+
+        .recipe-details-right {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
-        .chef-info a {
+
+        .recipe-description {
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .recipe-description p {
+            margin-bottom: 20px;
+        }
+
+        .chef-section,
+        .ratings-section {
+            margin-top: 30px;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .chef-section a,
+        .ratings-section a {
             text-decoration: none;
             color: inherit;
-            display: block;
+        }
+
+        .chef-section p,
+        .ratings-section p {
+            margin: 10px 0;
+        }
+
+        .chef-section p strong,
+        .ratings-section p strong {
+            color: #ff6f61;
+            font-weight: bold;
+        }
+
+        .ratings-section form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .ratings-section form label,
+        .ratings-section form input[type="number"],
+        .ratings-section form input[type="text"],
+        .ratings-section form button {
+            width: 80%;
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .ratings-section form button {
+            background-color: #ff6f61;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .ratings-section form button:hover {
+            background-color: #e65a50;
         }
     </style>
 </head>
@@ -46,45 +148,59 @@
 </header>
 
 <main>
-    <section class="recipe-details">
-        <h2 th:text="${recipe.name}">Recipe Name</h2>
-        <p th:text="${recipe.description}">Recipe Description</p>
-        <p><strong>Ingredients:</strong></p>
-        <ul>
-            <li th:each="ingredient : ${recipe.ingredients}">
-                <span th:text="${ingredient.name}">Ingredient Name</span>: <span th:text="${ingredient.quantity}">Quantity</span>
-            </li>
-        </ul>
-        <p><strong>Rating:</strong> <span th:text="${recipe.rating}">Rating</span></p>
-
-        <h3>Rate this Recipe</h3>
-        <form th:action="@{/recipes/rate/{id}(id=${recipe.id})}" method="post">
-            <label for="score">Rating (1-5):</label>
-            <input type="number" id="score" name="score" min="1" max="5" required>
-            <input type="text" id="comment" name="comment" required>
-            <button type="submit">Submit</button>
-        </form>
-
-        <h3>Ratings</h3>
-        <ul>
-            <li th:each="rating : ${ratings}">
-                <span th:text="${rating.score}">Score</span>
-                <span th:text="${rating.comment}">Comment</span>
-            </li>
-        </ul>
-    </section>
-
-    <div class="about-section">
-        <h3>Chef</h3>
-        <div th:if="${recipe.chef != null}" class="chef-info">
-            <a th:href="@{/chefs/{id}(id=${recipe.chef.id})}">
-                <p><strong>Full Name:</strong> <span th:text="${recipe.chef.firstName + ' ' + recipe.chef.lastName}"></span></p>
-                <p><strong>Email:</strong> <span th:text="${recipe.chef.email}"></span></p>
-                <p><strong>Rating:</strong> <span th:text="${recipe.chef.rating}"></span></p>
-            </a>
+    <div class="recipe-details-container">
+        <!-- Left section: Image, Name, Ingredients -->
+        <div class="recipe-details-left">
+            <img th:src="${recipe.photo != null ? '/static/images/' + recipe.photo : '/static/images/recipe-generic.svg'}" alt="Recipe Photo">
+            <h2 th:text="${recipe.name}">Recipe Name</h2>
+            <ul>
+                <li th:each="ingredient : ${recipe.ingredients}">
+                    <span th:text="${ingredient.name}">Ingredient Name</span>: <span th:text="${ingredient.quantity}">Quantity</span>
+                </li>
+            </ul>
         </div>
-        <div th:if="${recipe.chef == null}">
-            <p>No chef information available.</p>
+
+        <!-- Right section: Description -->
+        <div class="recipe-details-right">
+            <div class="recipe-description">
+                <p th:text="${recipe.description}">Recipe Description</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="recipe-details-container">
+        <!-- Left section: Chef Info -->
+        <div class="chef-section">
+            <h3>Chef</h3>
+            <div th:if="${recipe.chef != null}">
+                <a th:href="@{/chefs/{id}(id=${recipe.chef.id})}">
+                    <p><strong>Full Name:</strong> <span th:text="${recipe.chef.firstName + ' ' + recipe.chef.lastName}"></span></p>
+                    <p><strong>Email:</strong> <span th:text="${recipe.chef.email}"></span></p>
+                    <p><strong>Rating:</strong> <span th:text="${recipe.chef.rating}"></span></p>
+                </a>
+            </div>
+            <div th:if="${recipe.chef == null}">
+                <p>No chef information available.</p>
+            </div>
+        </div>
+
+        <!-- Right section: Ratings -->
+        <div class="ratings-section">
+            <h3>Rate this Recipe</h3>
+            <form th:action="@{/recipes/rate/{id}(id=${recipe.id})}" method="post">
+                <label for="score">Rating (1-5):</label>
+                <input type="number" id="score" name="score" min="1" max="5" required>
+                <input type="text" id="comment" name="comment" required>
+                <button type="submit">Submit</button>
+            </form>
+
+            <h3>Ratings</h3>
+            <ul>
+                <li th:each="rating : ${ratings}">
+                    <p><strong>Score:</strong> <span th:text="${rating.score}">Score</span></p>
+                    <p><strong>Comment:</strong> <span th:text="${rating.comment}">Comment</span></p>
+                </li>
+            </ul>
         </div>
     </div>
 </main>

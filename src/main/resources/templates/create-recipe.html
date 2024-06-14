@@ -12,13 +12,16 @@
 
 <main>
     <h2>Create Recipe</h2>
-    <form th:action="@{/recipes}" th:object="${recipe}" method="post" class="form-container">
+    <form th:action="@{/recipes}" enctype="multipart/form-data" th:object="${recipe}" method="post" class="form-container">
         <label for="name">Title:</label>
         <input type="text" id="name" th:field="*{name}" placeholder="Title" required>
 
         <label for="description">Description:</label>
         <textarea id="description" th:field="*{description}" placeholder="Description" required></textarea>
-
+        <div>
+            <label for="photo">Photo</label>
+            <input type="file" id="photo" name="file" accept="image/*">
+        </div>
         <label for="chef">Chef:</label>
         <select id="chef" th:field="*{chef}">
             <option th:each="chef : ${chefs}" th:value="${chef}" th:text="${chef.firstName} + ' ' + ${chef.lastName}"></option>

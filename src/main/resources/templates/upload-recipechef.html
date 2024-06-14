@@ -28,7 +28,10 @@
             <label for="ingredients">Ingredients (comma separated):</label>
             <input type="text" id="ingredients" name="ingredients" th:value="${recipe.ingredients}">
         </div>
-        
+        <div>
+            <label for="photo">Photo</label>
+            <input type="file" id="photo" name="file" accept="image/*">
+        </div>
 
         <div>
             <button type="submit">Upload Recipe</button>
