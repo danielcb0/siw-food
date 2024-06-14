@@ -12,7 +12,7 @@
 
 <main>
     <h2>Create New Chef</h2>
-    <form th:action="@{/admin/chefs}" th:object="${chef}" method="post" class="form-container">
+    <form th:action="@{/admin/chefs}" th:object="${chef}" method="post" enctype="multipart/form-data" class="form-container">
         <label for="firstName">First Name:</label>
         <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required>
 
@@ -22,11 +22,15 @@
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" th:field="*{email}" required>
 
+        <label for="photo">Photo:</label>
+        <input type="file" id="photo" name="photo" accept="image/*" >
+
         <div class="action-links">
             <button type="submit" class="btn"><i class="fas fa-save"></i> Create</button>
             <a href="/admin/chefs" class="btn btn-cancel"><i class="fas fa-times"></i> Cancel</a>
         </div>
     </form>
+
 </main>
 
 <footer>

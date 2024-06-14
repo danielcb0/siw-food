@@ -4,16 +4,22 @@ import it.uniroma3.siw_food.model.Chef;
 import it.uniroma3.siw_food.model.Credentials;
 import it.uniroma3.siw_food.repository.ChefRepository;
 import it.uniroma3.siw_food.repository.CredentialsRepository;
+import it.uniroma3.siw_food.service.UploadFileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Controller
 public class AuthenticationController {
@@ -26,6 +32,8 @@ public class AuthenticationController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UploadFileService uploadFileService;
 
     @GetMapping("/login")
     public String showLoginForm() {
@@ -40,14 +48,26 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public String registerChef(Chef chef, Credentials credentials) {
+    public String registerChef(
+            @ModelAttribute Chef chef,
+            @ModelAttribute Credentials credentials,
+            @RequestParam("file") MultipartFile file) {
+
+        // Guardar el archivo y obtener el nombre del archivo
+        String filename = uploadFileService.store(file);
+
+        // Asignar el nombre del archivo al campo photo del chef
+        chef.setPhoto(filename);
+
         credentials.setPassword(passwordEncoder.encode(credentials.getPassword()));
         credentials.setRole("USER");
-        chefRepository.save(chef);
         credentials.setChef(chef);
+        chefRepository.save(chef);
         credentialsRepository.save(credentials);
+
         return "redirect:/login";
     }
+
 
     @GetMapping("/loginSuccess")
     public String loginSuccess(Model model) {
@@ -71,6 +91,8 @@ public class AuthenticationController {
         // Redirigir a la página principal o cualquier otra página según sea necesario
         return "redirect:/";
     }
+
+
 
 
 

@@ -12,8 +12,7 @@
 <main>
     <section class="chefs-section">
         <h2>Chefs</h2>
-        <a href="/chefs/new" class="btn">Create New Chef</a>
-        <div class="chefs-grid">
+         <div class="chefs-grid">
             <div class="chef-card" th:each="chef : ${chefs}">
                 <a th:href="@{'/chefs/' + ${chef.id}}">
                     <img th:src="${chef.photo != null ? '/static/images/' + chef.photo : '/static/images/generic-chef.jpg'}" alt="Chef Photo">

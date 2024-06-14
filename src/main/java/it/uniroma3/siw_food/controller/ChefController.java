@@ -1,6 +1,7 @@
 package it.uniroma3.siw_food.controller;
 
 import it.uniroma3.siw_food.service.ChefService;
+import it.uniroma3.siw_food.service.UploadFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,6 +33,9 @@ public class ChefController {
 
     @Autowired
     private ChefService chefService;
+
+    @Autowired
+    private UploadFileService uploadFileService;
 
     // Nueva ruta para listar chefs
     @GetMapping("/list")
@@ -77,7 +81,9 @@ public class ChefController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateChef(@PathVariable Long id, @ModelAttribute("chef") Chef chefDetails, @RequestParam("photo") MultipartFile photo) {
+    public String updateChef(@PathVariable Long id,
+                             @ModelAttribute("chef") Chef chefDetails,
+                             @RequestParam("file") MultipartFile file) {
         Chef chef = chefRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Chef not exist with id :" + id));
 
@@ -92,16 +98,11 @@ public class ChefController {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         chef.setPassword(passwordEncoder.encode(chefDetails.getPassword()));
 
-        if (!photo.isEmpty()) {
-            try {
-                byte[] bytes = photo.getBytes();
-                Path path = Paths.get(UPLOADED_FOLDER + photo.getOriginalFilename());
-                Files.write(path, bytes);
-                chef.setPhoto("/images/" + photo.getOriginalFilename());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        // Guardar el archivo y obtener el nombre del archivo
+        String filename = uploadFileService.store(file);
+
+        // Asignar el nombre del archivo al campo photo del chef
+        chef.setPhoto(filename);
 
         chefRepository.save(chef);
         return "redirect:/chefs/list";
@@ -130,6 +131,14 @@ public class ChefController {
         model.addAttribute("chef", chef);
         model.addAttribute("recipes", chef.getRecipes());
         return "chef-details";
+    }
+    @GetMapping("/owner/{id}")
+    public String getChefOwnerDetails(@PathVariable Long id, Model model) {
+        Chef chef = chefRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Chef not exist with id :" + id));
+        model.addAttribute("chef", chef);
+        model.addAttribute("recipes", chef.getRecipes());
+        return "chef-details-owner";
     }
 
     @GetMapping("/{id}/edit")

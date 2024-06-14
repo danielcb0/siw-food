@@ -48,14 +48,18 @@
             <div class="profile-photo">
                 <img th:src="${chef.photo != null ? '/static/images/' + chef.photo : '/static/images/generic-chef.jpg'}" alt="Chef Photo">
             </div>
+
+
+
+
+
+
+
+
             <div class="profile-name">
                 <h2 th:text="${chef.firstName + ' ' + chef.lastName}"></h2>
             </div>
-            <!-- Opciones para editar perfil y subir receta -->
-            <div class="profile-options">
-                <a th:href="@{/chefs/{id}/edit(id=${chef.id})}" class="button">Edit Profile</a>
-                <a href="/recipes/new" class="button">Upload Recipe</a>
-            </div>
+
         </div>
         <div class="profile-content">
             <div class="about-section">

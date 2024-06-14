@@ -11,6 +11,9 @@ public class Rating {
 
     private int score; // Valoración de 1 a 5
 
+
+
+    private String comment;
     @ManyToOne
     private Recipe recipe;
 
@@ -18,8 +21,9 @@ public class Rating {
     public Rating() {}
 
     // Constructor con argumentos
-    public Rating(int score, Recipe recipe) {
+    public Rating(int score, String comment, Recipe recipe) {
         this.score = score;
+        this.comment = comment;
         this.recipe = recipe;
     }
 
@@ -46,5 +50,13 @@ public class Rating {
 
     public void setRecipe(Recipe recipe) {
         this.recipe = recipe;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

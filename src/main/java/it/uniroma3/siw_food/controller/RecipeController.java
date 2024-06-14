@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import it.uniroma3.siw_food.exception.ResourceNotFoundException;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalDouble;
@@ -134,12 +135,13 @@ public class RecipeController {
     }
 
     @PostMapping("/rate/{id}")
-    public String rateRecipe(@PathVariable Long id, @RequestParam("score") int score) {
+    public String rateRecipe(@PathVariable Long id, @RequestParam("score") int score,
+                             @RequestParam("comment") String comment) {
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe not exist with id :" + id));
 
         // Guardar la nueva valoración
-        Rating rating = new Rating(score, recipe);
+        Rating rating = new Rating(score,comment, recipe);
         ratingRepository.save(rating);
 
         // Calcular la media de las valoraciones de la receta
@@ -162,4 +164,5 @@ public class RecipeController {
 
         return "redirect:/recipes/" + id;
     }
+
 }

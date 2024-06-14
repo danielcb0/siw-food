@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chef Details</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px 0;
+            font-size: 16px;
+            text-align: center;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .profile-options {
+            margin-top: 20px;
+        }
+
+        .edit-button {
+            background-color: #28a745;
+            margin-left: 10px;
+        }
+
+        .edit-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<div th:replace="header :: header"></div>
+
+<div class="container">
+    <div class="profile">
+        <div class="profile-sidebar">
+            <div class="profile-photo">
+                <img th:src="${chef.photo != null ? '/static/images/' + chef.photo : '/static/images/generic-chef.jpg'}" alt="Chef Photo">
+            </div>
+
+
+
+
+
+
+
+
+            <div class="profile-name">
+                <h2 th:text="${chef.firstName + ' ' + chef.lastName}"></h2>
+            </div>
+            <!-- Opciones para editar perfil y subir receta -->
+            <div class="profile-options">
+                <a th:href="@{/chefs/{id}/edit(id=${chef.id})}" class="button">Edit Profile</a>
+                <a href="/recipes/new" class="button">Upload Recipe</a>
+            </div>
+        </div>
+        <div class="profile-content">
+            <div class="about-section">
+                <h3>About</h3>
+                <p><strong>Full Name:</strong> <span th:text="${chef.firstName + ' ' + chef.lastName}"></span></p>
+                <p><strong>Email:</strong> <span th:text="${chef.email}"></span></p>
+                <p><strong>Rating:</strong> <span th:text="${chef.rating}"></span></p>
+            </div>
+            <div class="recipes-section">
+                <h3>Recipes</h3>
+                <div class="recipes-list">
+                    <div th:each="recipe : ${chef.recipes}">
+                        <p>
+                            <a th:href="@{/recipes/{id}(id=${recipe.id})}" th:text="${recipe.name}"></a>
+                            <a th:href="@{/recipes/edit/{id}(id=${recipe.id})}" class="button edit-button">Edit</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2024 SIW FOOD. All rights reserved.</p>
+</footer>
+</body>
+</html>

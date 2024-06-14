@@ -13,11 +13,10 @@
 <main>
     <section class="recipes-section">
         <h2>Recipes</h2>
-        <a href="/recipes/new" class="btn">Create New Recipe</a>
-        <div class="recipes-grid">
+         <div class="recipes-grid">
             <div class="recipe-card" th:each="recipe : ${recipes}">
                 <a th:href="@{'/recipes/' + ${recipe.id}}">
-                    <img th:src="@{${recipe.photos}}" alt="Recipe Photo">
+                    <img th:src="${recipe.photo != null ? '/static/images/' + recipe.photo : '/static/images/recipe-generic.svg'}" alt="Chef Photo">
                     <div class="recipe-info">
                         <h3 th:text="${recipe.name}">Recipe Name</h3>
                         <p th:text="'Rating: ' + ${recipe.rating}">Rating: 0</p>

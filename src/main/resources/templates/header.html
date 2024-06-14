@@ -13,7 +13,7 @@
                     <a href="/admin">Admin Panel</a>
                 </li>
                 <li th:if="${#authorization.expression('isAuthenticated()') and !#authorization.expression('hasAuthority(''ADMIN'')')}">
-                    <a th:href="@{'/chefs/{id}'(id=${chefId})}">Profile</a>
+                    <a th:href="@{'/chefs/owner/{id}'(id=${chefId})}">Profile</a>
                 </li>
                 <li th:if="${#authorization.expression('isAuthenticated()')}">
                     <a href="/logout">Logout</a>

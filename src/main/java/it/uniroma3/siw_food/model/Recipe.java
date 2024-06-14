@@ -21,6 +21,9 @@ public class Recipe {
     @ElementCollection
     private List<String> photos;
 
+
+
+    private String photo;
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ingredient> ingredients;
 
@@ -54,6 +57,14 @@ public class Recipe {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     public String getDescription() {

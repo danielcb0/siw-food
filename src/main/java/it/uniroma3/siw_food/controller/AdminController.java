@@ -26,6 +26,9 @@ public class AdminController {
     @Autowired
     private RecipeRepository recipeRepository;
 
+    private static String UPLOADED_FOLDER = "src/main/resources/static/uploads/";
+
+
     @GetMapping
     public String adminPanel() {
         return "admin/admin-panel";

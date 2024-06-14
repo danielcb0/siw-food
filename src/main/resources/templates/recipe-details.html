@@ -61,6 +61,7 @@
         <form th:action="@{/recipes/rate/{id}(id=${recipe.id})}" method="post">
             <label for="score">Rating (1-5):</label>
             <input type="number" id="score" name="score" min="1" max="5" required>
+            <input type="text" id="comment" name="comment" required>
             <button type="submit">Submit</button>
         </form>
 
@@ -68,6 +69,7 @@
         <ul>
             <li th:each="rating : ${ratings}">
                 <span th:text="${rating.score}">Score</span>
+                <span th:text="${rating.comment}">Comment</span>
             </li>
         </ul>
     </section>
