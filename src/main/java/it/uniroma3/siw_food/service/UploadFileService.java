@@ -17,12 +17,33 @@ public class UploadFileService {
             if (file.isEmpty()) {
                 throw new RuntimeException("Failed to store empty file.");
             }
-            String filename = file.getOriginalFilename();
-            System.out.println("Filename: " + filename); // Imprimir el nombre del archivo para depuración
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(filename));
-            return filename;
+            Path destinationFile = this.rootLocation.resolve(Paths.get(file.getOriginalFilename()))
+                    .normalize().toAbsolutePath();
+
+            // Check if the file already exists and append a number to the filename if it does
+            int counter = 1;
+            while (Files.exists(destinationFile)) {
+                String newFilename = addSuffix(file.getOriginalFilename(), counter);
+                destinationFile = this.rootLocation.resolve(Paths.get(newFilename))
+                        .normalize().toAbsolutePath();
+                counter++;
+            }
+
+            try (var inputStream = file.getInputStream()) {
+                Files.copy(inputStream, destinationFile);
+            }
+            return destinationFile.getFileName().toString();
         } catch (IOException e) {
             throw new RuntimeException("FAIL!", e);
+        }
+    }
+
+    private String addSuffix(String filename, int counter) {
+        int dotIndex = filename.lastIndexOf(".");
+        if (dotIndex == -1) {
+            return filename + "_" + counter;
+        } else {
+            return filename.substring(0, dotIndex) + "_" + counter + filename.substring(dotIndex);
         }
     }
 

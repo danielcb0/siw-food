@@ -14,6 +14,7 @@ public class Credentials {
     private String role;
 
     @OneToOne
+    @JoinColumn(name = "chef_id", nullable = false)
     private Chef chef;
 
     // Constructores, getters y setters

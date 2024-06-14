@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Chef Profile</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/admin.css">
+
 </head>
 <body>
 <div th:replace="header :: header"></div>
 
 <div class="container">
     <h2>Edit Chef Profile</h2>
-    <form th:action="@{/chefs/update/{id}(id=${chef.id})}" th:object="${chef}" method="post" enctype="multipart/form-data">
+    <form th:action="@{/chefs/update/{id}(id=${chef.id})}" th:object="${chef}" method="post" enctype="multipart/form-data" class="form-container">
         <div>
             <label for="firstName">First Name</label>
             <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required>

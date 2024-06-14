@@ -24,6 +24,11 @@ public class Chef {
 
     private Integer rating; // Cambiado de int a Integer
 
+
+
+    @OneToOne(mappedBy = "chef", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Credentials credentials;
+
     // Constructores, getters y setters
     public Chef() {}
 
@@ -117,5 +122,13 @@ public class Chef {
 
     public void setRating(Integer rating) {
         this.rating = rating;
+    }
+
+    public Credentials getCredentials() {
+        return credentials;
+    }
+
+    public void setCredentials(Credentials credentials) {
+        this.credentials = credentials;
     }
 }

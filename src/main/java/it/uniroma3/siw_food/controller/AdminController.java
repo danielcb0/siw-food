@@ -7,6 +7,7 @@ import it.uniroma3.siw_food.repository.CredentialsRepository;
 import it.uniroma3.siw_food.service.ChefService;
 import it.uniroma3.siw_food.service.UploadFileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -105,7 +106,24 @@ public class AdminController {
         // Asignar el nombre del archivo al campo photo del chef
         chef.setPhoto(filename);
 
-        credentials.setPassword(passwordEncoder.encode(credentials.getPassword()));
+        // Update the password in Credentials
+         if (credentials == null) {
+            credentials = new Credentials();
+            credentials.setChef(chef);
+            credentials.setUsername(chef.getUsername()); // Asegurarse de que las credenciales tengan el nombre de usuario
+        }
+
+        // Only update the password if a new one is provided.
+        if (chef.getPassword() != null && !chef.getPassword().isEmpty()) {
+            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            credentials.setPassword(passwordEncoder.encode(chef.getPassword()));
+        }
+        chef.setCredentials(credentials);
+
+
+        // Hash the password before saving
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        chef.setPassword(passwordEncoder.encode(chef.getPassword()));
 
 
         chefRepository.save(chef);

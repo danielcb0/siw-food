@@ -1,5 +1,6 @@
 package it.uniroma3.siw_food.controller;
 
+import it.uniroma3.siw_food.model.Credentials;
 import it.uniroma3.siw_food.service.ChefService;
 import it.uniroma3.siw_food.service.UploadFileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +96,23 @@ public class ChefController {
         chef.setEmail(chefDetails.getEmail());
         chef.setUsername(chefDetails.getUsername());
         chef.setPassword(chefDetails.getPassword());
+
+
+        // Update the password in Credentials
+        Credentials credentials = chef.getCredentials();
+        if (credentials == null) {
+            credentials = new Credentials();
+            credentials.setChef(chef);
+            credentials.setUsername(chef.getUsername()); // Asegurarse de que las credenciales tengan el nombre de usuario
+        }
+
+        // Only update the password if a new one is provided.
+        if (chefDetails.getPassword() != null && !chefDetails.getPassword().isEmpty()) {
+            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            credentials.setPassword(passwordEncoder.encode(chefDetails.getPassword()));
+        }
+        chef.setCredentials(credentials);
+
 
         // Hash the password before saving
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
