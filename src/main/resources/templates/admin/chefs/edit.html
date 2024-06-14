@@ -12,16 +12,36 @@
 
 <main>
     <h2>Edit Chef</h2>
-    <form th:action="@{/admin/chefs/update/{id}(id=${chef.id})}" th:object="${chef}" method="post" class="form-container">
-        <label for="firstName">First Name:</label>
-        <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required>
+    <form th:action="@{/admin/chefs/update/{id}(id=${chef.id})}" th:object="${chef}" enctype="multipart/form-data" method="post" class="form-container">
+        <div>
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required>
+        </div>
+        <div>
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" name="lastName" th:field="*{lastName}" required>
+        </div>
+        <div>
+            <label for="dateOfBirth">Date of Birth</label>
+            <input type="date" id="dateOfBirth" name="dateOfBirth" th:field="*{dateOfBirth}" required>
+        </div>
+        <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" th:field="*{email}" required>
+        </div>
+        <div>
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" th:field="*{username}" required>
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
 
-        <label for="lastName">Last Name:</label>
-        <input type="text" id="lastName" name="lastName" th:field="*{lastName}" required>
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" th:field="*{email}" required>
-
+        <div>
+            <label for="photo">Photo</label>
+            <input type="file" id="photo" name="file" th:field="*{photo}" accept="image/*">
+        </div>
         <div class="action-links">
             <button type="submit" class="btn"><i class="fas fa-save"></i> Update</button>
             <a href="/admin/chefs" class="btn btn-cancel"><i class="fas fa-times"></i> Cancel</a>

@@ -87,6 +87,8 @@ public class ChefController {
         Chef chef = chefRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Chef not exist with id :" + id));
 
+
+
         chef.setFirstName(chefDetails.getFirstName());
         chef.setLastName(chefDetails.getLastName());
         chef.setDateOfBirth(chefDetails.getDateOfBirth());

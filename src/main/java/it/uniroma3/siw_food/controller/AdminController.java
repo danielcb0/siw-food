@@ -1,19 +1,24 @@
 package it.uniroma3.siw_food.controller;
 
+import it.uniroma3.siw_food.exception.ResourceNotFoundException;
+import it.uniroma3.siw_food.model.Credentials;
+import it.uniroma3.siw_food.model.Ingredient;
+import it.uniroma3.siw_food.repository.CredentialsRepository;
+import it.uniroma3.siw_food.service.ChefService;
+import it.uniroma3.siw_food.service.UploadFileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import it.uniroma3.siw_food.model.Chef;
 import it.uniroma3.siw_food.model.Recipe;
 import it.uniroma3.siw_food.repository.ChefRepository;
 import it.uniroma3.siw_food.repository.RecipeRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -25,6 +30,18 @@ public class AdminController {
 
     @Autowired
     private RecipeRepository recipeRepository;
+
+    @Autowired
+    private UploadFileService uploadFileService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private CredentialsRepository credentialsRepository;
+
+    @Autowired
+    private ChefService chefService;
 
     private static String UPLOADED_FOLDER = "src/main/resources/static/uploads/";
 
@@ -49,9 +66,20 @@ public class AdminController {
     }
 
     @PostMapping("/chefs")
-    public String saveChef(@ModelAttribute("chef") Chef chef, RedirectAttributes redirectAttributes) {
+    public String saveChef(@ModelAttribute Chef chef,
+                           @ModelAttribute Credentials credentials,
+                           @RequestParam("file") MultipartFile file) {
+        // Save file and get name string
+        String filename = uploadFileService.store(file);
+
+        // Set name file
+        chef.setPhoto(filename);
+
+        credentials.setPassword(passwordEncoder.encode(credentials.getPassword()));
+        credentials.setRole("USER");
+        credentials.setChef(chef);
         chefRepository.save(chef);
-        redirectAttributes.addFlashAttribute("message", "Chef created successfully!");
+        credentialsRepository.save(credentials);
         return "redirect:/admin/chefs";
     }
 
@@ -63,9 +91,26 @@ public class AdminController {
     }
 
     @PostMapping("/chefs/update/{id}")
-    public String updateChef(@PathVariable Long id, @ModelAttribute("chef") Chef chef, RedirectAttributes redirectAttributes) {
+    public String updateChef(@PathVariable Long id,
+                             @ModelAttribute("chef") Chef chef,
+                             @ModelAttribute Credentials credentials,
+                             @RequestParam("file") MultipartFile file,
+                             RedirectAttributes redirectAttributes) {
         chef.setId(id);
+
+
+        // Guardar el archivo y obtener el nombre del archivo
+        String filename = uploadFileService.store(file);
+
+        // Asignar el nombre del archivo al campo photo del chef
+        chef.setPhoto(filename);
+
+        credentials.setPassword(passwordEncoder.encode(credentials.getPassword()));
+
+
         chefRepository.save(chef);
+        credentials.setChef(chef);
+
         redirectAttributes.addFlashAttribute("message", "Chef updated successfully!");
         return "redirect:/admin/chefs";
     }
@@ -106,7 +151,26 @@ public class AdminController {
     }
 
     @PostMapping("/recipes")
-    public String saveRecipe(@ModelAttribute("recipe") Recipe recipe, RedirectAttributes redirectAttributes) {
+    public String saveRecipe(@ModelAttribute("recipe") Recipe recipe,
+                             @RequestParam("ingredientName") List<String> ingredientNames,
+                             @RequestParam("ingredientQuantity") List<String> ingredientQuantities,
+                             @RequestParam("file") MultipartFile file,
+                             RedirectAttributes redirectAttributes) {
+        Chef authenticatedChef = chefService.getAuthenticatedChef();
+
+
+        // Guardar el archivo y obtener el nombre del archivo
+        String filename = uploadFileService.store(file);
+
+        // Asignar el nombre del archivo al campo photo del chef
+        recipe.setPhoto(filename);
+
+        List<Ingredient> ingredients = new ArrayList<>();
+        for (int i = 0; i < ingredientNames.size(); i++) {
+            ingredients.add(new Ingredient(ingredientNames.get(i), ingredientQuantities.get(i), recipe));
+        }
+        recipe.setIngredients(ingredients);
+        recipe.setChef(authenticatedChef); // Asociar la receta con el chef autenticado
         recipeRepository.save(recipe);
         redirectAttributes.addFlashAttribute("message", "Recipe created successfully!");
         return "redirect:/admin/recipes";
@@ -120,9 +184,47 @@ public class AdminController {
     }
 
     @PostMapping("/recipes/update/{id}")
-    public String updateRecipe(@PathVariable Long id, @ModelAttribute("recipe") Recipe recipe, RedirectAttributes redirectAttributes) {
-        recipe.setId(id);
+    public String updateRecipe(@PathVariable Long id,
+                               @ModelAttribute("recipe") Recipe recipeDetails,
+                               @RequestParam("ingredientName") List<String> ingredientNames,
+                               @RequestParam("ingredientQuantity") List<String> ingredientQuantities,
+                               @RequestParam("file") MultipartFile file,
+                               RedirectAttributes redirectAttributes) {
+
+
+
+        // Buscar la receta existente en la base de datos
+        Recipe recipe = recipeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Recipe not exist with id :" + id));
+
+
+        // Save file and get name string
+        String filename = uploadFileService.store(file);
+
+        // Set name file
+        recipe.setPhoto(filename);
+
+        // Actualizar las propiedades de la receta
+        recipe.setName(recipeDetails.getName());
+        recipe.setDescription(recipeDetails.getDescription());
+        recipe.setPhotos(recipeDetails.getPhotos());
+        recipe.setChef(recipeDetails.getChef());
+
+        // Crear una lista de ingredientes y agregarla a la receta
+        List<Ingredient> ingredients = new ArrayList<>();
+        for (int i = 0; i < ingredientNames.size(); i++) {
+            ingredients.add(new Ingredient(ingredientNames.get(i), ingredientQuantities.get(i), recipe));
+        }
+        recipe.setIngredients(ingredients);
+
+        // Guardar la receta actualizada en la base de datos
         recipeRepository.save(recipe);
+
+        // Actualizar la valoración del chef asociado
+        Chef chef = recipe.getChef();
+        if (chef != null) {
+            ChefController.updateChefRating(chef);
+        }
         redirectAttributes.addFlashAttribute("message", "Recipe updated successfully!");
         return "redirect:/admin/recipes";
     }

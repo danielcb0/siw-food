@@ -99,15 +99,21 @@ public class RecipeController {
     public String updateRecipe(@PathVariable Long id,
                                @ModelAttribute("recipe") Recipe recipeDetails,
                                @RequestParam("ingredientName") List<String> ingredientNames,
-                               @RequestParam("ingredientQuantity") List<String> ingredientQuantities) {
+                               @RequestParam("ingredientQuantity") List<String> ingredientQuantities,
+                               @RequestParam("file") MultipartFile file) {
         // Buscar la receta existente en la base de datos
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe not exist with id :" + id));
 
+        // Save file and get name string
+        String filename = uploadFileService.store(file);
+
+        // Set name file
+        recipe.setPhoto(filename);
+
         // Actualizar las propiedades de la receta
         recipe.setName(recipeDetails.getName());
         recipe.setDescription(recipeDetails.getDescription());
-        recipe.setPhotos(recipeDetails.getPhotos());
         recipe.setChef(recipeDetails.getChef());
 
         // Crear una lista de ingredientes y agregarla a la receta

@@ -12,14 +12,18 @@
 
 <main>
     <h2>Edit Recipe</h2>
-    <form th:action="@{/recipes/update/{id}(id=${recipe.id})}" th:object="${recipe}" method="post" class="form-container">
+    <form th:action="@{/recipes/update/{id}(id=${recipe.id})}" th:object="${recipe}" enctype="multipart/form-data" method="post" class="form-container">
         <label for="name">Title:</label>
         <input type="text" id="name" th:field="*{name}" placeholder="Title" required>
 
         <label for="description">Description:</label>
         <textarea id="description" th:field="*{description}" placeholder="Description" required></textarea>
 
-        <label for="chef">Chef:</label>
+        <div>
+            <label for="photo">Photo</label>
+            <input type="file" id="photo" name="file"  accept="image/*" required>
+        </div>
+
         <select id="chef" th:field="*{chef}">
             <option th:each="chef : ${chefs}" th:value="${chef}" th:text="${chef.firstName} + ' ' + ${chef.lastName}"></option>
         </select>

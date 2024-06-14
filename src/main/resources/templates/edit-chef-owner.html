@@ -12,26 +12,35 @@
 <div class="container">
     <h2>Edit Chef Profile</h2>
     <form th:action="@{/chefs/update/{id}(id=${chef.id})}" th:object="${chef}" method="post" enctype="multipart/form-data">
-        <label for="firstName">First Name:</label>
-        <input type="text" id="firstName" th:field="*{firstName}" required>
+        <div>
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required>
+        </div>
+        <div>
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" name="lastName" th:field="*{lastName}" required>
+        </div>
+        <div>
+            <label for="dateOfBirth">Date of Birth</label>
+            <input type="date" id="dateOfBirth" name="dateOfBirth" th:field="*{dateOfBirth}" required>
+        </div>
+        <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" th:field="*{email}" required>
+        </div>
+        <div>
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" th:field="*{username}" required>
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
 
-        <label for="lastName">Last Name:</label>
-        <input type="text" id="lastName" th:field="*{lastName}" required>
-
-        <label for="dateOfBirth">Date of Birth:</label>
-        <input type="date" id="dateOfBirth" th:field="*{dateOfBirth}" required>
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" th:field="*{email}" required>
-
-        <label for="username">Username:</label>
-        <input type="text" id="username" th:field="*{username}" required>
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" th:field="*{password}" required>
-
-        <label for="photo">Photo:</label>
-        <input type="file" id="photo" name="photo">
+        <div>
+            <label for="photo">Photo</label>
+            <input type="file" id="photo" name="file"  accept="image/*" >
+        </div>
 
         <button type="submit">Update Profile</button>
     </form>
