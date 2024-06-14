@@ -4,31 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>List of Recipes</title>
+    <!-- Links to CSS files for general styles and admin-specific styles -->
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/css/admin.css">
 </head>
 <body>
+<!-- Include the header section defined elsewhere in the templates -->
 <div th:replace="header :: header"></div>
+
 <main>
+    <!-- Heading for list of recipes -->
     <h2>List of Recipes</h2>
+
+    <!-- Action links for creating a new recipe -->
     <div class="action-links">
         <a href="/admin/recipes/new" class="btn"><i class="fas fa-plus"></i> Create New Recipe</a>
     </div>
+
+    <!-- Table to display recipes -->
     <table>
         <thead>
         <tr>
+            <!-- Table headers for recipe title, description, and actions -->
             <th>Title</th>
             <th>Description</th>
             <th>Actions</th>
         </tr>
         </thead>
         <tbody>
+        <!-- Iterate over recipes to display each one -->
         <tr th:each="recipe : ${recipes}">
+            <!-- Display recipe title -->
             <td th:text="${recipe.name}"></td>
+            <!-- Display recipe description -->
             <td th:text="${recipe.description}"></td>
             <td>
+                <!-- Action links for editing and deleting each recipe -->
                 <div class="action-links">
+                    <!-- Edit button with a link that includes recipe ID -->
                     <a th:href="@{/admin/recipes/edit/{id}(id=${recipe.id})}" class="btn btn-edit"><i class="fas fa-edit"></i> Edit</a>
+                    <!-- Delete button with a link that includes recipe ID -->
                     <a th:href="@{/admin/recipes/delete/{id}(id=${recipe.id})}" class="btn btn-delete"><i class="fas fa-trash-alt"></i> Delete</a>
                 </div>
             </td>
@@ -36,9 +51,14 @@
         </tbody>
     </table>
 </main>
+
+<!-- Footer section -->
 <footer>
+    <!-- Copyright information -->
     <p>&copy; 2024 Your Company. All rights reserved.</p>
 </footer>
+
+<!-- Include Font Awesome script for icons -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
 </body>
 </html>

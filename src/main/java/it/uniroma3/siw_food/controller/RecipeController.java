@@ -9,7 +9,6 @@ import it.uniroma3.siw_food.repository.RatingRepository;
 import it.uniroma3.siw_food.repository.RecipeRepository;
 import it.uniroma3.siw_food.service.RecipeService;
 import it.uniroma3.siw_food.service.ChefService;
-
 import it.uniroma3.siw_food.service.UploadFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,11 +17,13 @@ import org.springframework.web.bind.annotation.*;
 import it.uniroma3.siw_food.exception.ResourceNotFoundException;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalDouble;
 
+/**
+ * This controller handles CRUD operations for recipes and related functionalities.
+ */
 @Controller
 @RequestMapping("/recipes")
 public class RecipeController {
@@ -35,6 +36,7 @@ public class RecipeController {
 
     @Autowired
     private ChefRepository chefRepository;
+
     @Autowired
     private ChefService chefService;
 
@@ -44,6 +46,12 @@ public class RecipeController {
     @Autowired
     private RecipeService recipeService;
 
+    /**
+     * Lists all recipes.
+     *
+     * @param model the model to add attributes to
+     * @return the view to list all recipes
+     */
     @GetMapping("/list")
     public String getAllRecipes(Model model) {
         List<Recipe> recipes = recipeRepository.findAll();
@@ -51,6 +59,12 @@ public class RecipeController {
         return "list-recipes";
     }
 
+    /**
+     * Displays the form to create a new recipe.
+     *
+     * @param model the model to add attributes to
+     * @return the view to create a new recipe
+     */
     @GetMapping("/new")
     public String createRecipeForm(Model model) {
         model.addAttribute("recipe", new Recipe());
@@ -58,6 +72,15 @@ public class RecipeController {
         return "create-recipe";
     }
 
+    /**
+     * Creates a new recipe and uploads the associated photo.
+     *
+     * @param recipe             the recipe to be created
+     * @param ingredientNames    the names of the ingredients
+     * @param ingredientQuantities the quantities of the ingredients
+     * @param file               the photo file of the recipe
+     * @return the redirect URL to the list of recipes
+     */
     @PostMapping
     public String createRecipe(@ModelAttribute("recipe") Recipe recipe,
                                @RequestParam("ingredientName") List<String> ingredientNames,
@@ -65,14 +88,14 @@ public class RecipeController {
                                @RequestParam("file") MultipartFile file) {
         Chef authenticatedChef = chefService.getAuthenticatedChef();
         if (authenticatedChef == null) {
-            // Manejar el caso donde no hay chef autenticado
+            // Handle the case where no chef is authenticated
             return "redirect:/login";
         }
 
-        // Guardar el archivo y obtener el nombre del archivo
+        // Save the file and get the file name
         String filename = uploadFileService.store(file);
 
-        // Asignar el nombre del archivo al campo photo del chef
+        // Assign the file name to the recipe's photo field
         recipe.setPhoto(filename);
 
         List<Ingredient> ingredients = new ArrayList<>();
@@ -80,12 +103,18 @@ public class RecipeController {
             ingredients.add(new Ingredient(ingredientNames.get(i), ingredientQuantities.get(i), recipe));
         }
         recipe.setIngredients(ingredients);
-        recipe.setChef(authenticatedChef); // Asociar la receta con el chef autenticado
+        recipe.setChef(authenticatedChef); // Associate the recipe with the authenticated chef
         recipeRepository.save(recipe);
         return "redirect:/recipes/list";
     }
 
-
+    /**
+     * Displays the form to edit an existing recipe.
+     *
+     * @param id    the ID of the recipe to be edited
+     * @param model the model to add attributes to
+     * @return the view to edit a recipe
+     */
     @GetMapping("/edit/{id}")
     public String editRecipeForm(@PathVariable Long id, Model model) {
         Recipe recipe = recipeRepository.findById(id)
@@ -95,38 +124,48 @@ public class RecipeController {
         return "edit-recipe";
     }
 
+    /**
+     * Updates an existing recipe.
+     *
+     * @param id                 the ID of the recipe to be updated
+     * @param recipeDetails      the updated recipe details
+     * @param ingredientNames    the names of the ingredients
+     * @param ingredientQuantities the quantities of the ingredients
+     * @param file               the photo file of the recipe
+     * @return the redirect URL to the list of recipes
+     */
     @PostMapping("/update/{id}")
     public String updateRecipe(@PathVariable Long id,
                                @ModelAttribute("recipe") Recipe recipeDetails,
                                @RequestParam("ingredientName") List<String> ingredientNames,
                                @RequestParam("ingredientQuantity") List<String> ingredientQuantities,
                                @RequestParam("file") MultipartFile file) {
-        // Buscar la receta existente en la base de datos
+        // Find the existing recipe in the database
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe not exist with id :" + id));
 
-        // Save file and get name string
+        // Save the file and get the file name
         String filename = uploadFileService.store(file);
 
-        // Set name file
+        // Assign the file name to the recipe's photo field
         recipe.setPhoto(filename);
 
-        // Actualizar las propiedades de la receta
+        // Update recipe properties
         recipe.setName(recipeDetails.getName());
         recipe.setDescription(recipeDetails.getDescription());
         recipe.setChef(recipeDetails.getChef());
 
-        // Crear una lista de ingredientes y agregarla a la receta
+        // Create a list of ingredients and add it to the recipe
         List<Ingredient> ingredients = new ArrayList<>();
         for (int i = 0; i < ingredientNames.size(); i++) {
             ingredients.add(new Ingredient(ingredientNames.get(i), ingredientQuantities.get(i), recipe));
         }
         recipe.setIngredients(ingredients);
 
-        // Guardar la receta actualizada en la base de datos
+        // Save the updated recipe in the database
         recipeRepository.save(recipe);
 
-        // Actualizar la valoración del chef asociado
+        // Update the rating of the associated chef
         Chef chef = recipe.getChef();
         if (chef != null) {
             ChefController.updateChefRating(chef);
@@ -135,6 +174,13 @@ public class RecipeController {
         return "redirect:/recipes/list";
     }
 
+    /**
+     * Displays the form to delete an existing recipe.
+     *
+     * @param id    the ID of the recipe to be deleted
+     * @param model the model to add attributes to
+     * @return the view to delete a recipe
+     */
     @GetMapping("/delete/{id}")
     public String deleteRecipeForm(@PathVariable Long id, Model model) {
         Recipe recipe = recipeRepository.findById(id)
@@ -143,6 +189,12 @@ public class RecipeController {
         return "delete-recipe";
     }
 
+    /**
+     * Deletes an existing recipe from the database.
+     *
+     * @param id the ID of the recipe to be deleted
+     * @return the redirect URL to the list of recipes
+     */
     @PostMapping("/delete/{id}")
     public String deleteRecipe(@PathVariable Long id) {
         Recipe recipe = recipeRepository.findById(id)
@@ -151,6 +203,13 @@ public class RecipeController {
         return "redirect:/recipes/list";
     }
 
+    /**
+     * Displays the details of a specific recipe.
+     *
+     * @param id    the ID of the recipe
+     * @param model the model to add attributes to
+     * @return the view to display recipe details
+     */
     @GetMapping("/{id}")
     public String getRecipeDetails(@PathVariable Long id, Model model) {
         Recipe recipe = recipeRepository.findById(id)
@@ -160,35 +219,42 @@ public class RecipeController {
         return "recipe-details";
     }
 
+    /**
+     * Rates a specific recipe.
+     *
+     * @param id      the ID of the recipe to be rated
+     * @param score   the score of the rating
+     * @param comment the comment for the rating
+     * @return the redirect URL to the recipe details page
+     */
     @PostMapping("/rate/{id}")
     public String rateRecipe(@PathVariable Long id, @RequestParam("score") int score,
                              @RequestParam("comment") String comment) {
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe not exist with id :" + id));
 
-        // Guardar la nueva valoración
-        Rating rating = new Rating(score,comment, recipe);
+        // Save the new rating
+        Rating rating = new Rating(score, comment, recipe);
         ratingRepository.save(rating);
 
-        // Calcular la media de las valoraciones de la receta
+        // Calculate the average rating of the recipe
         List<Rating> ratings = ratingRepository.findByRecipe(recipe);
         OptionalDouble averageRating = ratings.stream().mapToInt(Rating::getScore).average();
         recipe.setRating((int) averageRating.orElse(0));
         recipeRepository.save(recipe);
 
-        // Actualizar la media de las valoraciones del chef
+        // Update the average rating of the chef
         Chef chef = recipe.getChef();
         if (chef != null) {
             List<Recipe> recipes = chef.getRecipes();
             OptionalDouble chefAverageRating = recipes.stream()
-                    .filter(r -> r.getRating() > 0) // Filtrar recetas que tengan valoraciones
+                    .filter(r -> r.getRating() > 0) // Filter recipes that have ratings
                     .mapToInt(Recipe::getRating)
                     .average();
             chef.setRating((int) chefAverageRating.orElse(0));
-            chefRepository.save(chef); // Asegurarse de guardar el chef con la nueva media
+            chefRepository.save(chef); // Ensure the chef is saved with the new average
         }
 
         return "redirect:/recipes/" + id;
     }
-
 }

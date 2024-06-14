@@ -6,14 +6,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+
+/**
+ * This controller handles the home page of the application.
+ */
 @Controller
 public class HomeController {
-
 
     @Autowired
     private ChefService chefService;
 
+    /**
+     * Displays the home page.
+     *
+     * @param model the model to add attributes to
+     * @return the home page view
+     */
     @GetMapping("/")
     public String home(Model model) {
         Chef chef = chefService.getAuthenticatedChef();

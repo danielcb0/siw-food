@@ -21,6 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+/**
+ * This controller handles authentication-related operations, including login and registration.
+ */
 @Controller
 public class AuthenticationController {
 
@@ -32,14 +35,26 @@ public class AuthenticationController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     @Autowired
     private UploadFileService uploadFileService;
 
+    /**
+     * Displays the login form.
+     *
+     * @return the login view
+     */
     @GetMapping("/login")
     public String showLoginForm() {
         return "login";
     }
 
+    /**
+     * Displays the registration form.
+     *
+     * @param model the model to add attributes to
+     * @return the registration view
+     */
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("chef", new Chef());
@@ -47,16 +62,24 @@ public class AuthenticationController {
         return "register";
     }
 
+    /**
+     * Registers a new chef.
+     *
+     * @param chef        the chef to be registered
+     * @param credentials the credentials of the chef
+     * @param file        the photo file of the chef
+     * @return the redirect URL to the login page
+     */
     @PostMapping("/register")
     public String registerChef(
             @ModelAttribute Chef chef,
             @ModelAttribute Credentials credentials,
             @RequestParam("file") MultipartFile file) {
 
-        // Guardar el archivo y obtener el nombre del archivo
+        // Save the file and get the file name
         String filename = uploadFileService.store(file);
 
-        // Asignar el nombre del archivo al campo photo del chef
+        // Assign the file name to the chef's photo field
         chef.setPhoto(filename);
 
         credentials.setPassword(passwordEncoder.encode(credentials.getPassword()));
@@ -68,32 +91,32 @@ public class AuthenticationController {
         return "redirect:/login";
     }
 
-
+    /**
+     * Handles successful login.
+     *
+     * @param model the model to add attributes to
+     * @return the redirect URL to the home page
+     */
     @GetMapping("/loginSuccess")
     public String loginSuccess(Model model) {
-        // Obtener el usuario autenticado actual
+        // Get the current authenticated user
         User loggedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        // Obtener el nombre de usuario del usuario logueado
+        // Get the username of the logged user
         String username = loggedUser.getUsername();
 
-        // Encontrar las credenciales asociadas con este nombre de usuario
+        // Find the credentials associated with this username
         Credentials credentials = credentialsRepository.findByUsername(username);
 
-        // Obtener el chef asociado con estas credenciales
+        // Get the chef associated with these credentials
         Chef chef = credentials.getChef();
 
-        // Agregar el ID del chef al modelo
+        // Add the chef's ID to the model
         if (chef != null) {
             model.addAttribute("chefId", chef.getId());
         }
 
-        // Redirigir a la página principal o cualquier otra página según sea necesario
+        // Redirect to the home page or any other page as necessary
         return "redirect:/";
     }
-
-
-
-
-
 }

@@ -2,6 +2,9 @@ package it.uniroma3.siw_food.model;
 
 import jakarta.persistence.*;
 
+/**
+ * Represents the credentials for authentication and authorization.
+ */
 @Entity
 public class Credentials {
 
@@ -17,7 +20,8 @@ public class Credentials {
     @JoinColumn(name = "chef_id", nullable = false)
     private Chef chef;
 
-    // Constructores, getters y setters
+    // Constructors, getters, and setters
+
     public Credentials() {}
 
     public Credentials(String username, String password, String role, Chef chef) {
@@ -27,7 +31,8 @@ public class Credentials {
         this.chef = chef;
     }
 
-    // Getters y setters
+    // Getters and setters
+
     public Long getId() {
         return id;
     }

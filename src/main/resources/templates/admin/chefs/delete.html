@@ -8,15 +8,20 @@
     <link rel="stylesheet" href="/static/css/admin.css">
 </head>
 <body>
+<!-- Include the header section from a Thymeleaf fragment -->
 <div th:replace="header :: header"></div>
 
 <main>
     <h2>Delete Chef</h2>
     <p>Are you sure you want to delete this chef?</p>
+    <!-- Form to confirm deletion of a chef -->
     <form th:action="@{/admin/chefs/delete/{id}(id=${chef.id})}" method="post" class="form-container">
+        <!-- Display the chef's full name -->
         <p th:text="${chef.firstName} + ' ' + ${chef.lastName}"></p>
         <div class="action-links">
+            <!-- Submit button to delete the chef -->
             <button type="submit" class="btn btn-delete"><i class="fas fa-trash-alt"></i> Delete</button>
+            <!-- Link to cancel and go back to the list of chefs -->
             <a href="/admin/chefs" class="btn btn-cancel"><i class="fas fa-times"></i> Cancel</a>
         </div>
     </form>

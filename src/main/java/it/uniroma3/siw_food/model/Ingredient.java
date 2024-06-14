@@ -2,6 +2,9 @@ package it.uniroma3.siw_food.model;
 
 import jakarta.persistence.*;
 
+/**
+ * Represents an Ingredient entity associated with a Recipe.
+ */
 @Entity
 public class Ingredient {
 
@@ -15,17 +18,18 @@ public class Ingredient {
     @ManyToOne
     private Recipe recipe;
 
-    // Constructor sin argumentos (necesario para JPA)
+    // No-argument constructor (required by JPA)
     public Ingredient() {}
 
-    // Constructor con argumentos
+    // Constructor with arguments
     public Ingredient(String name, String quantity, Recipe recipe) {
         this.name = name;
         this.quantity = quantity;
         this.recipe = recipe;
     }
 
-    // Getters y Setters
+    // Getters and Setters
+
     public Long getId() {
         return id;
     }

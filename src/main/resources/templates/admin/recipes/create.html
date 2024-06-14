@@ -4,63 +4,89 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Recipe</title>
+    <!-- Links to CSS files for general styles and admin-specific styles -->
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/css/admin.css">
 </head>
 <body>
+<!-- Include the header section defined elsewhere in the templates -->
 <div th:replace="header :: header"></div>
 
 <main>
     <h2>Create Recipe</h2>
-        <form th:action="@{/admin/recipes}" enctype="multipart/form-data" th:object="${recipe}" method="post" class="form-container">
-            <label for="name">Title:</label>
-            <input type="text" id="name" th:field="*{name}" placeholder="Title" required>
+    <!-- Form to create a new recipe -->
+    <form th:action="@{/admin/recipes}" enctype="multipart/form-data" th:object="${recipe}" method="post" class="form-container">
+        <!-- Field for the recipe title -->
+        <label for="name">Title:</label>
+        <input type="text" id="name" th:field="*{name}" placeholder="Title" required>
 
-            <label for="description">Description:</label>
-            <textarea id="description" th:field="*{description}" placeholder="Description" required></textarea>
-            <div>
-                <label for="photo">Photo</label>
-                <input type="file" id="photo" name="file" accept="image/*">
-            </div>
-            <label for="chef">Chef:</label>
-            <select id="chef" th:field="*{chef}">
-                <option th:each="chef : ${chefs}" th:value="${chef}" th:text="${chef.firstName} + ' ' + ${chef.lastName}"></option>
-            </select>
+        <!-- Field for the recipe description -->
+        <label for="description">Description:</label>
+        <textarea id="description" th:field="*{description}" placeholder="Description" required></textarea>
 
-            <div id="ingredients">
-                <div class="ingredient">
-                    <label for="ingredientName1">Ingredient Name:</label>
-                    <input type="text" id="ingredientName1" name="ingredientName" placeholder="Ingredient Name" >
-                    <label for="ingredientQuantity1">Quantity:</label>
-                    <input type="text" id="ingredientQuantity1" name="ingredientQuantity" placeholder="Quantity" >
-                </div>
-            </div>
-            <button type="button" onclick="addIngredient()">Add Ingredient</button>
+        <!-- Field to upload a photo of the recipe -->
+        <div>
+            <label for="photo">Photo</label>
+            <input type="file" id="photo" name="file" accept="image/*">
+        </div>
 
-            <div class="action-links">
-                <button type="submit" class="btn"><i class="fas fa-save"></i> Create</button>
-                <a href="/recipes/list" class="btn btn-cancel"><i class="fas fa-times"></i> Cancel</a>
+        <!-- Dropdown to select the chef associated with the recipe -->
+        <label for="chef">Chef:</label>
+        <select id="chef" th:field="*{chef}">
+            <!-- Iterate over the list of chefs to populate the dropdown -->
+            <option th:each="chef : ${chefs}" th:value="${chef}" th:text="${chef.firstName} + ' ' + ${chef.lastName}"></option>
+        </select>
+
+        <!-- Section to add ingredients -->
+        <div id="ingredients">
+            <div class="ingredient">
+                <label for="ingredientName1">Ingredient Name:</label>
+                <input type="text" id="ingredientName1" name="ingredientName" placeholder="Ingredient Name">
+                <label for="ingredientQuantity1">Quantity:</label>
+                <input type="text" id="ingredientQuantity1" name="ingredientQuantity" placeholder="Quantity">
             </div>
-        </form>
+        </div>
+
+        <!-- Button to dynamically add more ingredients -->
+        <button type="button" onclick="addIngredient()">Add Ingredient</button>
+
+        <!-- Action links to submit the form or cancel -->
+        <div class="action-links">
+            <button type="submit" class="btn"><i class="fas fa-save"></i> Create</button>
+            <a href="/recipes/list" class="btn btn-cancel"><i class="fas fa-times"></i> Cancel</a>
+        </div>
+    </form>
 </main>
 
 <footer>
     <p>&copy; 2024 Your Company. All rights reserved.</p>
 </footer>
+
+<!-- Include Font Awesome script for icons -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
- <script>
+
+<!-- Script to dynamically add more ingredient fields -->
+<script>
+    // Variable to keep track of added ingredients
     let ingredientIndex = 1;
+
+    // Function to add a new ingredient field
     function addIngredient() {
+        // Increment the ingredient index
         ingredientIndex++;
+        // Get the ingredients container
         const ingredientsDiv = document.getElementById('ingredients');
+        // Create a new div for the new ingredient
         const newIngredientDiv = document.createElement('div');
         newIngredientDiv.classList.add('ingredient');
+        // Add input fields for the ingredient name and quantity
         newIngredientDiv.innerHTML = `
-            <label for="ingredientName${ingredientIndex}">Ingredient Name:</label>
-            <input type="text" id="ingredientName${ingredientIndex}" name="ingredientName" placeholder="Ingredient Name"  >
-            <label for="ingredientQuantity${ingredientIndex}">Quantity:</label>
-            <input type="text" id="ingredientQuantity${ingredientIndex}" name="ingredientQuantity" placeholder="Quantity"  >
-        `;
+                <label for="ingredientName${ingredientIndex}">Ingredient Name:</label>
+                <input type="text" id="ingredientName${ingredientIndex}" name="ingredientName" placeholder="Ingredient Name">
+                <label for="ingredientQuantity${ingredientIndex}">Quantity:</label>
+                <input type="text" id="ingredientQuantity${ingredientIndex}" name="ingredientQuantity" placeholder="Quantity">
+            `;
+        // Append the new ingredient div to the ingredients container
         ingredientsDiv.appendChild(newIngredientDiv);
     }
 </script>

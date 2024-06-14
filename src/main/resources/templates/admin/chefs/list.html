@@ -8,10 +8,13 @@
     <link rel="stylesheet" href="/static/css/admin.css">
 </head>
 <body>
+<!-- Include the header section from a Thymeleaf fragment -->
 <div th:replace="header :: header"></div>
+
 <main>
     <h2>List of Chefs</h2>
     <div class="action-links">
+        <!-- Link to create a new chef -->
         <a href="/admin/chefs/new" class="btn"><i class="fas fa-user-plus"></i> Create New Chef</a>
     </div>
     <table>
@@ -24,13 +27,16 @@
         </tr>
         </thead>
         <tbody>
+        <!-- Iterate over the list of chefs and display their details -->
         <tr th:each="chef : ${chefs}">
             <td th:text="${chef.firstName}"></td>
             <td th:text="${chef.lastName}"></td>
             <td th:text="${chef.email}"></td>
             <td>
                 <div class="action-links">
+                    <!-- Link to edit a chef -->
                     <a th:href="@{'/admin/chefs/edit/' + ${chef.id}}" class="btn btn-edit"><i class="fas fa-edit"></i> Edit</a>
+                    <!-- Link to delete a chef -->
                     <a th:href="@{'/admin/chefs/delete/' + ${chef.id}}" class="btn btn-delete"><i class="fas fa-trash-alt"></i> Delete</a>
                 </div>
             </td>
@@ -38,6 +44,7 @@
         </tbody>
     </table>
 </main>
+
 <footer>
     <p>&copy; 2024 Your Company. All rights reserved.</p>
 </footer>

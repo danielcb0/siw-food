@@ -8,10 +8,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * Service class for handling file uploads.
+ */
 @Service
 public class UploadFileService {
     private final Path rootLocation = Paths.get("src/main/resources/static/images");
 
+    /**
+     * Stores the uploaded file in the specified directory.
+     *
+     * @param file the file to be stored
+     * @return the name of the stored file
+     */
     public String store(MultipartFile file) {
         try {
             if (file.isEmpty()) {
@@ -38,6 +47,13 @@ public class UploadFileService {
         }
     }
 
+    /**
+     * Adds a suffix to the filename to avoid naming conflicts.
+     *
+     * @param filename the original filename
+     * @param counter  the counter to be appended
+     * @return the new filename with the suffix
+     */
     private String addSuffix(String filename, int counter) {
         int dotIndex = filename.lastIndexOf(".");
         if (dotIndex == -1) {
@@ -46,5 +62,4 @@ public class UploadFileService {
             return filename.substring(0, dotIndex) + "_" + counter + filename.substring(dotIndex);
         }
     }
-
 }

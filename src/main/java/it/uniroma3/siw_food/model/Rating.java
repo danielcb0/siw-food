@@ -2,6 +2,9 @@ package it.uniroma3.siw_food.model;
 
 import jakarta.persistence.*;
 
+/**
+ * Represents a Rating entity associated with a Recipe.
+ */
 @Entity
 public class Rating {
 
@@ -9,25 +12,24 @@ public class Rating {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int score; // Valoración de 1 a 5
-
-
-
+    private int score; // Rating score from 1 to 5
     private String comment;
+
     @ManyToOne
     private Recipe recipe;
 
-    // Constructor sin argumentos (necesario para JPA)
+    // No-argument constructor (required by JPA)
     public Rating() {}
 
-    // Constructor con argumentos
+    // Constructor with arguments
     public Rating(int score, String comment, Recipe recipe) {
         this.score = score;
         this.comment = comment;
         this.recipe = recipe;
     }
 
-    // Getters y Setters
+    // Getters and Setters
+
     public Long getId() {
         return id;
     }

@@ -4,26 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delete Recipe</title>
+    <!-- Links to CSS files for general styles and admin-specific styles -->
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/css/admin.css">
 </head>
 <body>
+<!-- Include the header section defined elsewhere in the templates -->
 <div th:replace="header :: header"></div>
 
 <main>
     <h2>Delete Recipe</h2>
+    <!-- Display confirmation message with recipe name -->
     <p>Are you sure you want to delete the recipe <strong th:text="${recipe.name}">Recipe Title</strong>?</p>
+
+    <!-- Form to submit delete request -->
     <form th:action="@{/admin/recipes/delete/{id}(id=${recipe.id})}" method="post" class="form-container">
+        <!-- Action links for delete and cancel -->
         <div class="action-links">
+            <!-- Button to delete the recipe -->
             <button type="submit" class="btn btn-delete"><i class="fas fa-trash-alt"></i> Delete</button>
+            <!-- Button to cancel the delete operation and return to recipe list -->
             <a href="/admin/recipes" class="btn btn-cancel"><i class="fas fa-times"></i> Cancel</a>
         </div>
     </form>
 </main>
 
 <footer>
+    <!-- Copyright information -->
     <p>&copy; 2024 Your Company. All rights reserved.</p>
 </footer>
+
+<!-- Include Font Awesome script for icons -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
 </body>
 </html>

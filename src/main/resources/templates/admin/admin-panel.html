@@ -4,20 +4,20 @@
     <title>Admin Panel</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/css/admin.css">
-
-
+    <!-- Include Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
+<!-- Include the header section defined elsewhere in the templates -->
 <div th:replace="header :: header"></div>
 
 <header>
     <h1>Admin Panel</h1>
 </header>
 
-
-
 <main>
     <h2>Welcome to the Admin Panel</h2>
+    <!-- Action links for managing chefs and recipes -->
     <div class="action-links">
         <a th:href="@{/admin/chefs}"><i class="fas fa-user-cog"></i> Manage Chefs</a>
         <a th:href="@{/admin/recipes}"><i class="fas fa-utensils"></i> Manage Recipes</a>

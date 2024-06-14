@@ -6,13 +6,14 @@
     <title>Edit Chef Profile</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/css/admin.css">
-
 </head>
 <body>
+<!-- Header -->
 <div th:replace="header :: header"></div>
 
 <div class="container">
     <h2>Edit Chef Profile</h2>
+    <!-- Form to update chef's profile -->
     <form th:action="@{/chefs/update/{id}(id=${chef.id})}" th:object="${chef}" method="post" enctype="multipart/form-data" class="form-container">
         <div>
             <label for="firstName">First Name</label>
@@ -38,16 +39,15 @@
             <label for="password">Password</label>
             <input type="password" id="password" name="password" required>
         </div>
-
         <div>
             <label for="photo">Photo</label>
-            <input type="file" id="photo" name="file"  accept="image/*" >
+            <input type="file" id="photo" name="file" accept="image/*">
         </div>
-
         <button type="submit">Update Profile</button>
     </form>
 </div>
 
+<!-- Footer -->
 <footer>
     <p>&copy; 2024 SIW FOOD. All rights reserved.</p>
 </footer>

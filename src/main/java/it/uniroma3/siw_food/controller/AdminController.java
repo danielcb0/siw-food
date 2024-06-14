@@ -22,6 +22,10 @@ import it.uniroma3.siw_food.repository.RecipeRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This controller handles all the administrative functions for the application.
+ * It includes CRUD operations for both Chefs and Recipes, as well as file uploads and user authentication.
+ */
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -47,12 +51,24 @@ public class AdminController {
     private static String UPLOADED_FOLDER = "src/main/resources/static/uploads/";
 
 
+    /**
+     * Displays the admin panel.
+     *
+     * @return the admin panel view
+     */
     @GetMapping
     public String adminPanel() {
         return "admin/admin-panel";
     }
 
     // CRUD operations for Chefs
+
+    /**
+     * Lists all the chefs.
+     *
+     * @param model the model to add attributes to
+     * @return the view to list chefs
+     */
     @GetMapping("/chefs")
     public String listChefs(Model model) {
         List<Chef> chefs = chefRepository.findAll();
@@ -60,12 +76,26 @@ public class AdminController {
         return "admin/chefs/list";
     }
 
+    /**
+     * Shows the form to create a new chef.
+     *
+     * @param model the model to add attributes to
+     * @return the view to create a chef
+     */
     @GetMapping("/chefs/new")
     public String createChefForm(Model model) {
         model.addAttribute("chef", new Chef());
         return "admin/chefs/create";
     }
 
+    /**
+     * Saves a new chef to the database.
+     *
+     * @param chef        the chef to be saved
+     * @param credentials the credentials of the chef
+     * @param file        the photo file of the chef
+     * @return the redirect URL to the list of chefs
+     */
     @PostMapping("/chefs")
     public String saveChef(@ModelAttribute Chef chef,
                            @ModelAttribute Credentials credentials,
@@ -84,6 +114,13 @@ public class AdminController {
         return "redirect:/admin/chefs";
     }
 
+    /**
+     * Shows the form to edit an existing chef.
+     *
+     * @param id    the ID of the chef to be edited
+     * @param model the model to add attributes to
+     * @return the view to edit a chef
+     */
     @GetMapping("/chefs/edit/{id}")
     public String editChefForm(@PathVariable Long id, Model model) {
         Chef chef = chefRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid chef Id:" + id));
@@ -91,6 +128,16 @@ public class AdminController {
         return "admin/chefs/edit";
     }
 
+    /**
+     * Updates an existing chef in the database.
+     *
+     * @param id                 the ID of the chef to be updated
+     * @param chef               the updated chef
+     * @param credentials        the credentials of the chef
+     * @param file               the photo file of the chef
+     * @param redirectAttributes the attributes for the redirect URL
+     * @return the redirect URL to the list of chefs
+     */
     @PostMapping("/chefs/update/{id}")
     public String updateChef(@PathVariable Long id,
                              @ModelAttribute("chef") Chef chef,
@@ -99,18 +146,17 @@ public class AdminController {
                              RedirectAttributes redirectAttributes) {
         chef.setId(id);
 
-
-        // Guardar el archivo y obtener el nombre del archivo
+        // Save the file and get the file name
         String filename = uploadFileService.store(file);
 
-        // Asignar el nombre del archivo al campo photo del chef
+        // Assign the file name to the chef's photo field
         chef.setPhoto(filename);
 
         // Update the password in Credentials
-         if (credentials == null) {
+        if (credentials == null) {
             credentials = new Credentials();
             credentials.setChef(chef);
-            credentials.setUsername(chef.getUsername()); // Asegurarse de que las credenciales tengan el nombre de usuario
+            credentials.setUsername(chef.getUsername());
         }
 
         // Only update the password if a new one is provided.
@@ -120,11 +166,9 @@ public class AdminController {
         }
         chef.setCredentials(credentials);
 
-
         // Hash the password before saving
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         chef.setPassword(passwordEncoder.encode(chef.getPassword()));
-
 
         chefRepository.save(chef);
         credentials.setChef(chef);
@@ -133,6 +177,13 @@ public class AdminController {
         return "redirect:/admin/chefs";
     }
 
+    /**
+     * Shows the form to delete an existing chef.
+     *
+     * @param id    the ID of the chef to be deleted
+     * @param model the model to add attributes to
+     * @return the view to delete a chef
+     */
     @GetMapping("/chefs/delete/{id}")
     public String deleteChefForm(@PathVariable Long id, Model model) {
         Chef chef = chefRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid chef Id:" + id));
@@ -140,12 +191,19 @@ public class AdminController {
         return "admin/chefs/delete";
     }
 
+    /**
+     * Deletes an existing chef from the database.
+     *
+     * @param id                 the ID of the chef to be deleted
+     * @param redirectAttributes the attributes for the redirect URL
+     * @return the redirect URL to the list of chefs
+     */
     @PostMapping("/chefs/delete/{id}")
     public String deleteChef(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Chef chef = chefRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid chef Id:" + id));
         List<Recipe> recipes = recipeRepository.findByChefId(id);
 
-        // Eliminar todas las recetas asociadas al chef
+        // Delete all recipes associated with the chef
         recipeRepository.deleteAll(recipes);
 
         chefRepository.delete(chef);
@@ -153,8 +211,14 @@ public class AdminController {
         return "redirect:/admin/chefs";
     }
 
-
     // CRUD operations for Recipes
+
+    /**
+     * Lists all the recipes.
+     *
+     * @param model the model to add attributes to
+     * @return the view to list recipes
+     */
     @GetMapping("/recipes")
     public String listRecipes(Model model) {
         List<Recipe> recipes = recipeRepository.findAll();
@@ -162,12 +226,28 @@ public class AdminController {
         return "admin/recipes/list";
     }
 
+    /**
+     * Shows the form to create a new recipe.
+     *
+     * @param model the model to add attributes to
+     * @return the view to create a recipe
+     */
     @GetMapping("/recipes/new")
     public String createRecipeForm(Model model) {
         model.addAttribute("recipe", new Recipe());
         return "admin/recipes/create";
     }
 
+    /**
+     * Saves a new recipe to the database.
+     *
+     * @param recipe              the recipe to be saved
+     * @param ingredientNames     the names of the ingredients
+     * @param ingredientQuantities the quantities of the ingredients
+     * @param file                the photo file of the recipe
+     * @param redirectAttributes  the attributes for the redirect URL
+     * @return the redirect URL to the list of recipes
+     */
     @PostMapping("/recipes")
     public String saveRecipe(@ModelAttribute("recipe") Recipe recipe,
                              @RequestParam("ingredientName") List<String> ingredientNames,
@@ -176,11 +256,10 @@ public class AdminController {
                              RedirectAttributes redirectAttributes) {
         Chef authenticatedChef = chefService.getAuthenticatedChef();
 
-
-        // Guardar el archivo y obtener el nombre del archivo
+        // Save the file and get the file name
         String filename = uploadFileService.store(file);
 
-        // Asignar el nombre del archivo al campo photo del chef
+        // Assign the file name to the recipe's photo field
         recipe.setPhoto(filename);
 
         List<Ingredient> ingredients = new ArrayList<>();
@@ -188,12 +267,19 @@ public class AdminController {
             ingredients.add(new Ingredient(ingredientNames.get(i), ingredientQuantities.get(i), recipe));
         }
         recipe.setIngredients(ingredients);
-        recipe.setChef(authenticatedChef); // Asociar la receta con el chef autenticado
+        recipe.setChef(authenticatedChef); // Associate the recipe with the authenticated chef
         recipeRepository.save(recipe);
         redirectAttributes.addFlashAttribute("message", "Recipe created successfully!");
         return "redirect:/admin/recipes";
     }
 
+    /**
+     * Shows the form to edit an existing recipe.
+     *
+     * @param id    the ID of the recipe to be edited
+     * @param model the model to add attributes to
+     * @return the view to edit a recipe
+     */
     @GetMapping("/recipes/edit/{id}")
     public String editRecipeForm(@PathVariable Long id, Model model) {
         Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid recipe Id:" + id));
@@ -201,6 +287,17 @@ public class AdminController {
         return "admin/recipes/edit";
     }
 
+    /**
+     * Updates an existing recipe in the database.
+     *
+     * @param id                 the ID of the recipe to be updated
+     * @param recipeDetails      the updated recipe
+     * @param ingredientNames    the names of the ingredients
+     * @param ingredientQuantities the quantities of the ingredients
+     * @param file               the photo file of the recipe
+     * @param redirectAttributes the attributes for the redirect URL
+     * @return the redirect URL to the list of recipes
+     */
     @PostMapping("/recipes/update/{id}")
     public String updateRecipe(@PathVariable Long id,
                                @ModelAttribute("recipe") Recipe recipeDetails,
@@ -208,13 +305,9 @@ public class AdminController {
                                @RequestParam("ingredientQuantity") List<String> ingredientQuantities,
                                @RequestParam("file") MultipartFile file,
                                RedirectAttributes redirectAttributes) {
-
-
-
-        // Buscar la receta existente en la base de datos
+        // Search for the existing recipe in the database
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe not exist with id :" + id));
-
 
         // Save file and get name string
         String filename = uploadFileService.store(file);
@@ -222,23 +315,23 @@ public class AdminController {
         // Set name file
         recipe.setPhoto(filename);
 
-        // Actualizar las propiedades de la receta
+        // Update recipe properties
         recipe.setName(recipeDetails.getName());
         recipe.setDescription(recipeDetails.getDescription());
         recipe.setPhotos(recipeDetails.getPhotos());
         recipe.setChef(recipeDetails.getChef());
 
-        // Crear una lista de ingredientes y agregarla a la receta
+        // Create a list of ingredients and add it to the recipe
         List<Ingredient> ingredients = new ArrayList<>();
         for (int i = 0; i < ingredientNames.size(); i++) {
             ingredients.add(new Ingredient(ingredientNames.get(i), ingredientQuantities.get(i), recipe));
         }
         recipe.setIngredients(ingredients);
 
-        // Guardar la receta actualizada en la base de datos
+        // Save the updated recipe in the database
         recipeRepository.save(recipe);
 
-        // Actualizar la valoración del chef asociado
+        // Update the rating of the associated chef
         Chef chef = recipe.getChef();
         if (chef != null) {
             ChefController.updateChefRating(chef);
@@ -247,6 +340,13 @@ public class AdminController {
         return "redirect:/admin/recipes";
     }
 
+    /**
+     * Shows the form to delete an existing recipe.
+     *
+     * @param id    the ID of the recipe to be deleted
+     * @param model the model to add attributes to
+     * @return the view to delete a recipe
+     */
     @GetMapping("/recipes/delete/{id}")
     public String deleteRecipeForm(@PathVariable Long id, Model model) {
         Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid recipe Id:" + id));
@@ -254,6 +354,13 @@ public class AdminController {
         return "admin/recipes/delete";
     }
 
+    /**
+     * Deletes an existing recipe from the database.
+     *
+     * @param id                 the ID of the recipe to be deleted
+     * @param redirectAttributes the attributes for the redirect URL
+     * @return the redirect URL to the list of recipes
+     */
     @PostMapping("/recipes/delete/{id}")
     public String deleteRecipe(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid recipe Id:" + id));

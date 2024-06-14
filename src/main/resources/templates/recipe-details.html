@@ -6,6 +6,7 @@
     <title>Recipe Details</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <style>
+        /* CSS styles specific to this page */
         .recipe-details-container {
             display: grid;
             grid-template-columns: 2fr 2fr;
@@ -148,6 +149,7 @@
 </header>
 
 <main>
+    <!-- Recipe Details Section -->
     <div class="recipe-details-container">
         <!-- Left section: Image, Name, Ingredients -->
         <div class="recipe-details-left">
@@ -168,6 +170,7 @@
         </div>
     </div>
 
+    <!-- Chef and Ratings Section -->
     <div class="recipe-details-container">
         <!-- Left section: Chef Info -->
         <div class="chef-section">
@@ -190,6 +193,7 @@
             <form th:action="@{/recipes/rate/{id}(id=${recipe.id})}" method="post">
                 <label for="score">Rating (1-5):</label>
                 <input type="number" id="score" name="score" min="1" max="5" required>
+                <label for="comment">Comment:</label>
                 <input type="text" id="comment" name="comment" required>
                 <button type="submit">Submit</button>
             </form>

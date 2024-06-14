@@ -4,64 +4,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Recipe</title>
+    <!-- Links to CSS files for general styles and admin-specific styles -->
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/css/admin.css">
 </head>
 <body>
+<!-- Include the header section defined elsewhere in the templates -->
 <div th:replace="header :: header"></div>
 
 <main>
+    <!-- Heading for edit recipe -->
     <h2>Edit Recipe</h2>
+
+    <!-- Form to edit recipe details -->
     <form th:action="@{/admin/recipes/update/{id}(id=${recipe.id})}" th:object="${recipe}" enctype="multipart/form-data" method="post" class="form-container">
+        <!-- Input field for recipe title -->
         <label for="name">Title:</label>
         <input type="text" id="name" th:field="*{name}" placeholder="Title" required>
 
+        <!-- Text area for recipe description -->
         <label for="description">Description:</label>
         <textarea id="description" th:field="*{description}" placeholder="Description" required></textarea>
 
+        <!-- File input for recipe photo -->
         <div>
             <label for="photo">Photo</label>
-            <input type="file" id="photo" name="file"  accept="image/*" required>
+            <input type="file" id="photo" name="file" accept="image/*" required>
         </div>
 
-         <select id="chef" th:field="*{chef}">
+        <!-- Dropdown list to select chef -->
+        <label for="chef">Chef:</label>
+        <select id="chef" th:field="*{chef}">
+            <!-- Iterate over available chefs -->
             <option th:each="chef : ${chefs}" th:value="${chef}" th:text="${chef.firstName} + ' ' + ${chef.lastName}"></option>
         </select>
 
+        <!-- Div container for dynamic addition of ingredients -->
         <div id="ingredients">
+            <!-- Iterate over existing ingredients of the recipe -->
             <div th:each="ingredient, iterStat : ${recipe.ingredients}" class="ingredient">
+                <!-- Label and input field for ingredient name -->
                 <label th:for="'ingredientName' + ${iterStat.index}">Ingredient Name:</label>
                 <input type="text" th:id="'ingredientName' + ${iterStat.index}" name="ingredientName" th:value="${ingredient.name}" placeholder="Ingredient Name" required>
+                <!-- Label and input field for ingredient quantity -->
                 <label th:for="'ingredientQuantity' + ${iterStat.index}">Quantity:</label>
                 <input type="text" th:id="'ingredientQuantity' + ${iterStat.index}" name="ingredientQuantity" th:value="${ingredient.quantity}" placeholder="Quantity" required>
             </div>
         </div>
+
+        <!-- Button to add more ingredients dynamically -->
         <button type="button" onclick="addIngredient()">Add Ingredient</button>
 
+        <!-- Action links for update and cancel -->
         <div class="action-links">
+            <!-- Button to submit form and update recipe -->
             <button type="submit" class="btn"><i class="fas fa-save"></i> Update</button>
+            <!-- Button to cancel edit and return to recipe list -->
             <a href="/recipes/list" class="btn btn-cancel"><i class="fas fa-times"></i> Cancel</a>
         </div>
     </form>
 </main>
 
+<!-- Footer section -->
 <footer>
+    <!-- Copyright information -->
     <p>&copy; 2024 Your Company. All rights reserved.</p>
 </footer>
+
+<!-- Include Font Awesome script for icons -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+<!-- JavaScript function to add ingredients dynamically -->
 <script>
+    // Initialize ingredient index based on existing ingredients count
     let ingredientIndex = [[${#lists.size(recipe.ingredients)}]];
+
+    // Function to add a new ingredient input field dynamically
     function addIngredient() {
         ingredientIndex++;
         const ingredientsDiv = document.getElementById('ingredients');
         const newIngredientDiv = document.createElement('div');
         newIngredientDiv.classList.add('ingredient');
         newIngredientDiv.innerHTML = `
-            <label for="ingredientName${ingredientIndex}">Ingredient Name:</label>
-            <input type="text" id="ingredientName${ingredientIndex}" name="ingredientName" placeholder="Ingredient Name" required>
-            <label for="ingredientQuantity${ingredientIndex}">Quantity:</label>
-            <input type="text" id="ingredientQuantity${ingredientIndex}" name="ingredientQuantity" placeholder="Quantity" required>
-        `;
+                <label for="ingredientName${ingredientIndex}">Ingredient Name:</label>
+                <input type="text" id="ingredientName${ingredientIndex}" name="ingredientName" placeholder="Ingredient Name" required>
+                <label for="ingredientQuantity${ingredientIndex}">Quantity:</label>
+                <input type="text" id="ingredientQuantity${ingredientIndex}" name="ingredientQuantity" placeholder="Quantity" required>
+            `;
         ingredientsDiv.appendChild(newIngredientDiv);
     }
 </script>

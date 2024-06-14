@@ -12,6 +12,9 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import javax.sql.DataSource;
 
+/**
+ * Configuration class for setting up Spring Security.
+ */
 @Configuration
 @EnableWebSecurity
 public class AuthConfiguration {
@@ -19,6 +22,12 @@ public class AuthConfiguration {
     @Autowired
     private DataSource dataSource;
 
+    /**
+     * Configures global authentication with JDBC authentication.
+     *
+     * @param auth the AuthenticationManagerBuilder
+     * @throws Exception if an error occurs during configuration
+     */
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication()
@@ -27,11 +36,23 @@ public class AuthConfiguration {
                 .usersByUsernameQuery("SELECT username, password, 1 as enabled FROM credentials WHERE username=?");
     }
 
+    /**
+     * Creates a BCryptPasswordEncoder bean.
+     *
+     * @return the password encoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configures HTTP security, including URL authorization and form login/logout.
+     *
+     * @param http the HttpSecurity
+     * @return the configured SecurityFilterChain
+     * @throws Exception if an error occurs during configuration
+     */
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http

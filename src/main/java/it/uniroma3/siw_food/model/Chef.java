@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Represents a Chef entity with personal details, credentials, recipes, and ratings.
+ */
 @Entity
 public class Chef {
 
@@ -14,7 +17,7 @@ public class Chef {
     private String firstName;
     private String lastName;
     private LocalDate dateOfBirth;
-    private String photo;  // Este campo es solo String
+    private String photo; // This field is a simple String
     private String email;
     private String username;
     private String password;
@@ -22,14 +25,13 @@ public class Chef {
     @OneToMany(mappedBy = "chef")
     private List<Recipe> recipes;
 
-    private Integer rating; // Cambiado de int a Integer
-
-
+    private Integer rating; // Changed from int to Integer
 
     @OneToOne(mappedBy = "chef", cascade = CascadeType.ALL, orphanRemoval = true)
     private Credentials credentials;
 
-    // Constructores, getters y setters
+    // Constructors, getters, and setters
+
     public Chef() {}
 
     public Chef(String firstName, String lastName, LocalDate dateOfBirth, String photo, String email, String username, String password) {
@@ -40,10 +42,11 @@ public class Chef {
         this.email = email;
         this.username = username;
         this.password = password;
-        this.rating = 0; // Valor inicial si es necesario
+        this.rating = 0; // Initial value if needed
     }
 
-    // Getters y setters
+    // Getters and setters
+
     public Long getId() {
         return id;
     }
