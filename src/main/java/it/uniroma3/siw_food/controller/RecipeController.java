@@ -96,21 +96,28 @@ public class RecipeController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateRecipe(@PathVariable Long id, @ModelAttribute("recipe") Recipe recipeDetails, @RequestParam("ingredientName") List<String> ingredientNames, @RequestParam("ingredientQuantity") List<String> ingredientQuantities) {
+    public String updateRecipe(@PathVariable Long id,
+                               @ModelAttribute("recipe") Recipe recipeDetails,
+                               @RequestParam("ingredientName") List<String> ingredientNames,
+                               @RequestParam("ingredientQuantity") List<String> ingredientQuantities) {
+        // Buscar la receta existente en la base de datos
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe not exist with id :" + id));
 
+        // Actualizar las propiedades de la receta
         recipe.setName(recipeDetails.getName());
         recipe.setDescription(recipeDetails.getDescription());
         recipe.setPhotos(recipeDetails.getPhotos());
         recipe.setChef(recipeDetails.getChef());
 
+        // Crear una lista de ingredientes y agregarla a la receta
         List<Ingredient> ingredients = new ArrayList<>();
         for (int i = 0; i < ingredientNames.size(); i++) {
             ingredients.add(new Ingredient(ingredientNames.get(i), ingredientQuantities.get(i), recipe));
         }
         recipe.setIngredients(ingredients);
 
+        // Guardar la receta actualizada en la base de datos
         recipeRepository.save(recipe);
 
         // Actualizar la valoración del chef asociado
@@ -118,6 +125,7 @@ public class RecipeController {
         if (chef != null) {
             ChefController.updateChefRating(chef);
         }
+
         return "redirect:/recipes/list";
     }
 

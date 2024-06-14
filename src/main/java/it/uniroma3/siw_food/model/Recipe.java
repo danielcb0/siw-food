@@ -1,6 +1,8 @@
 package it.uniroma3.siw_food.model;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,7 +27,7 @@ public class Recipe {
 
     private String photo;
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Ingredient> ingredients;
+    private List<Ingredient> ingredients = new ArrayList<>();
 
     @ManyToOne
     private Chef chef;
@@ -88,7 +90,10 @@ public class Recipe {
     }
 
     public void setIngredients(List<Ingredient> ingredients) {
-        this.ingredients = ingredients;
+        this.ingredients.clear();
+        if (ingredients != null) {
+            this.ingredients.addAll(ingredients);
+        }
     }
 
     public Chef getChef() {
